@@ -1,0 +1,2788 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contrato — Criação | Protótipo</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+<!-- Design system InfoPrice (InfoDesign 1.0) — puxado de ds.infoprice.co -->
+<link rel="stylesheet" href="assets/tokens/tokens.css" />
+<link rel="stylesheet" href="assets/components/form.css" />
+<link rel="stylesheet" href="assets/components/radio.css" />
+<link rel="stylesheet" href="assets/components/chips.css" />
+<link rel="stylesheet" href="assets/components/dropdown.css" />
+<link rel="stylesheet" href="assets/components/tag.css" />
+<link rel="stylesheet" href="assets/components/primary-button.css" />
+<link rel="stylesheet" href="assets/components/link-button.css" />
+<link rel="stylesheet" href="assets/components/date-picker.css" />
+<link rel="stylesheet" href="assets/components/checkbox.css" />
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════
+     Layout do protótipo — NÃO é componente do DS.
+     Sidebar (.nav-*) e topbar (.topbar*) extraídos verbatim de
+     "Cadastro de Contratos - Passo 1.html" (app shell já em produção).
+     ═══════════════════════════════════════════════════════════════ */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-family-base);
+    background: var(--color-gray-50);
+    color: var(--color-gray-900);
+  }
+
+  .app-shell { display: flex; min-height: 100vh; }
+  .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  /* ── Sidebar azul (extraído verbatim) ── */
+  .nav-sidebar {
+    width: 56px;
+    background: #378EF0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 8px 16px;
+    flex-shrink: 0;
+    min-height: 100vh;
+  }
+  .nav-logo { width: 25px; height: 29px; margin-bottom: 30px; flex-shrink: 0; }
+  .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .nav-icons { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+  .nav-btn {
+    background: none; border: none; cursor: pointer;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; opacity: 0.7; transition: opacity 0.15s; flex-shrink: 0;
+  }
+  .nav-btn svg { display: block; }
+  .nav-btn:hover { opacity: 1; }
+  .nav-btn--active { opacity: 1; }
+
+  /* ── Topbar (extraído verbatim) ── */
+  .topbar {
+    background: #fff; color: #333;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; height: 64px; font-size: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+  .topbar-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 20px; }
+  .topbar-breadcrumb a { color: #333; text-decoration: none; }
+  .topbar-breadcrumb .sep { color: #999; }
+  .topbar-breadcrumb .current { color: #333; }
+  .topbar-user { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #555; }
+
+  .page {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  .card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .card__title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 20px;
+  }
+
+  .card__title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .card__title-row .card__title { margin-bottom: 0; }
+  .card__helper {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+  }
+  .card__title-row + .card__helper-block { margin-bottom: 20px; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .field-grid + .field-grid { margin-top: 20px; }
+  .field-grid--4 { grid-template-columns: repeat(4, 1fr); }
+  /* Data início + Data fim dividem a mesma coluna flexível que o Cliente usa
+     na linha de cima (repeat(3, 1fr)) — assim a borda direita sempre bate
+     com a do Cliente, em qualquer largura de tela, sem precisar de pixel mágico. */
+  .field-grid--contrato-row2 { grid-template-columns: repeat(3, 1fr); align-items: end; }
+  .datas-par { display: flex; gap: 20px; min-width: 0; }
+  .datas-par .form-field { flex: 1; min-width: 0; }
+
+  .field-group__caption {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: .02em;
+    color: var(--color-gray-800);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .radio-row { display: flex; gap: 24px; align-items: center; height: 36px; }
+
+  .field-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .subsection { margin-top: 24px; }
+  .subsection:first-child { margin-top: 0; }
+
+  /* Largura fixa por campo — nunca encolhe (grid 1fr encolhia quando só 1 campo
+     de 2 estava visível) nem estoura (flex-wrap absorve quando os 2 cabem juntos). */
+  .conditional-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 12px;
+  }
+  .conditional-fields > .form-field {
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  /* Tipos de canal — lado a lado abaixo da linha Bundle/Canais, largura fixa
+     por campo (nunca encolhe) e quebra de linha automática se não couberem
+     todos juntos (nunca estoura o card, mesmo com os 3 canais abertos). */
+  .canais-tipos-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .canais-tipos-field { width: 340px; max-width: 100%; flex-shrink: 0; }
+
+  /* Multiselect (trigger estilo form-field + painel com busca) */
+  .multiselect { position: relative; }
+  .multiselect__trigger {
+    width: 100%;
+    cursor: pointer;
+    background: var(--color-white);
+    text-align: left;
+  }
+  .multiselect__value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-gray-500);
+  }
+  .multiselect__value.has-value { color: var(--color-gray-900); }
+  .multiselect__panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 25;
+    display: none;
+    flex-direction: column;
+    padding: 8px;
+    width: 100%;
+    min-width: 220px;
+    max-height: 280px;
+  }
+  .multiselect.is-open .multiselect__panel { display: flex; }
+  .multiselect__search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-gray-300);
+    padding: 4px 8px 8px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+  .multiselect__search svg { flex-shrink: 0; color: var(--color-gray-500); }
+  .multiselect__search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+  }
+  .multiselect__search input::placeholder { color: var(--color-gray-500); }
+  .multiselect__options { overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+  .multiselect__option { padding: 6px 8px; border-radius: var(--radius-sm); }
+  .multiselect__option:hover { background: var(--color-blue-light-5); }
+  .multiselect__empty { padding: 8px; font-size: var(--font-size-sm); color: var(--color-gray-600); margin: 0; }
+
+  /* Select pesquisável de usuário (Responsável) — linha com e-mail + nome */
+  .searchable-select__option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-family-base);
+  }
+  .searchable-select__option:hover { background: var(--color-blue-light-5); }
+  .searchable-select__email { font-size: var(--font-size-md); color: var(--color-gray-900); white-space: nowrap; }
+
+  /* Switch — o DS ainda não tem um componente de Switch publicado;
+     construído com os tokens de cor do DS (mesma lógica de estado do Radio/Checkbox). */
+  .switch { position: relative; display: inline-flex; width: 36px; height: 20px; flex-shrink: 0; cursor: pointer; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: inherit; }
+  .switch__track {
+    position: absolute; inset: 0;
+    background: var(--color-gray-500);
+    border-radius: var(--radius-pill);
+    transition: background 150ms ease;
+  }
+  .switch__track::before {
+    content: "";
+    position: absolute;
+    height: 16px; width: 16px;
+    left: 2px; top: 2px;
+    background: var(--color-white);
+    border-radius: var(--radius-pill);
+    transition: transform 150ms ease;
+  }
+  .switch input:checked + .switch__track { background: var(--color-blue-400); }
+  .switch input:checked + .switch__track::before { transform: translateX(16px); }
+  .switch input:focus-visible + .switch__track { outline: 2px solid var(--color-blue-400); outline-offset: 2px; }
+  .switch input:disabled + .switch__track { opacity: 0.4; cursor: not-allowed; }
+  .switch--sm { width: 30px; height: 16px; }
+  .switch--sm .switch__track::before { height: 12px; width: 12px; }
+  .switch--sm input:checked + .switch__track::before { transform: translateX(14px); }
+
+  /* Adicionais */
+  .adicionais-list { display: flex; flex-direction: column; gap: 4px; }
+  .adicional-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-gray-50);
+  }
+  .adicional-row__label { font-size: var(--font-size-md); color: var(--color-gray-900); }
+  .adicional-row__sub, .adicional-row__stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    padding: 6px 10px;
+    background: var(--color-gray-200);
+    border-radius: var(--radius-sm);
+  }
+  .adicional-row__sublabel { font-size: var(--font-size-sm); color: var(--color-gray-700); margin-right: 8px; }
+  .adicional-row__lock-msg { margin-left: auto; font-size: var(--font-size-sm); color: var(--color-gray-600); }
+
+  /* Agrupamento visual dentro de Adicionais (ex: "Elasticidade Cruzada",
+     "Alertas e Monitoramentos") — mesma lista, só com um título e uma
+     divisória sutil separando do resto. */
+  .adicionais-group { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--color-gray-300); }
+  .adicionais-group__title {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--color-gray-700);
+    margin-bottom: 4px;
+  }
+  .adicional-row__skus { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .adicional-row__skus input {
+    width: 90px;
+    border: 1px solid var(--color-gray-400);
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+  }
+
+  /* Tag "IA" — recurso com inteligência artificial. Cores e ícone copiados dos
+     protótipos de referência (Cadastro de Contratos - Passo 3/4 - Varejo). */
+  .ia-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #FDE3F7;
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    color: #E663C9;
+    white-space: nowrap;
+    line-height: 18px;
+  }
+  .stepper__btn {
+    width: 24px; height: 24px;
+    border: 1px solid var(--color-gray-400);
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    color: var(--color-gray-800);
+    font-size: var(--font-size-md);
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stepper__btn:hover { border-color: var(--color-blue-400); color: var(--color-blue-400); }
+  .stepper__count { min-width: 20px; text-align: center; font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); color: var(--color-gray-900); }
+  .stepper__summary { font-size: var(--font-size-sm); color: var(--color-gray-700); margin-left: 4px; white-space: nowrap; }
+
+  /* Ações da página */
+  .page-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  /* Modal de detalhamento (somente leitura) */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(50, 50, 50, 0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.is-open { display: flex; }
+  .modal {
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    width: 640px;
+    max-width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-elevation);
+  }
+  .modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-gray-300);
+    flex-shrink: 0;
+  }
+  .modal__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); margin: 0; }
+  .modal__subtitle { font-size: var(--font-size-sm); color: var(--color-gray-700); margin: 4px 0 0; }
+  .modal__close {
+    border: none; background: none; cursor: pointer;
+    color: var(--color-gray-700);
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .modal__close:hover { color: var(--color-gray-900); }
+  .modal__body { padding: 20px 24px; overflow-y: auto; }
+  .modal__nucleo + .modal__nucleo { margin-top: 20px; }
+  .modal__nucleo-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: var(--color-gray-700);
+    margin: 0 0 8px;
+  }
+  .modal__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-md);
+  }
+  .modal__row:last-child { border-bottom: none; }
+  .modal__row-label { color: var(--color-gray-900); }
+  .modal__row-value { color: var(--color-gray-700); font-weight: var(--font-weight-semibold); white-space: nowrap; }
+  .modal__empty { font-size: var(--font-size-sm); color: var(--color-gray-700); }
+  .modal__intro { font-size: var(--font-size-sm); color: var(--color-gray-700); margin: 0 0 12px; }
+  .modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-gray-300);
+    flex-shrink: 0;
+  }
+
+  .paste-textarea {
+    width: 100%;
+    min-height: 160px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-gray-500);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-gray-900);
+    resize: vertical;
+  }
+  .paste-textarea::placeholder { color: var(--color-gray-500); }
+  .paste-textarea:focus {
+    outline: none;
+    border-color: var(--color-blue-400);
+    box-shadow: 0 0 4px rgba(24, 144, 255, 0.5);
+  }
+
+  .not-found-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .not-found-list__item {
+    font-size: var(--font-size-sm);
+    color: var(--color-red-600);
+    background: var(--color-red-light-5);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Domínios / Usuários — lista com botão de adicionar + colar em massa */
+  .list-section { display: flex; flex-direction: column; gap: 12px; }
+  .list-section__row { display: flex; gap: 12px; align-items: center; }
+  .list-section__row .form-field { flex: 1; min-width: 0; }
+
+  .list-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .list-table__header, .list-table__row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+  }
+  .list-table__header {
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-300);
+  }
+  .list-table__row { border-bottom: 1px solid var(--color-gray-100); }
+  .list-table__row:last-child { border-bottom: none; }
+  .list-table__col {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--color-gray-700);
+  }
+  .list-table__cell {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .list-table__cell--muted { color: var(--color-gray-600); }
+  .list-table__empty {
+    padding: 16px 14px;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+  .list-table__delete {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    color: var(--color-gray-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+  }
+  .list-table__delete:hover { background: var(--color-red-light-5); color: var(--color-red-400); }
+
+  /* Ação destrutiva (confirmar exclusão) — o DS ainda não tem uma variação
+     "danger" do Primary Button, então uso os tokens de vermelho diretamente. */
+  .btn-primary--danger { background: var(--color-red-400); }
+  .btn-primary--danger:hover { background: var(--color-red-600); }
+  .btn-primary--danger:active { background: var(--color-red-700); }
+
+  /* "Colar lista" — link de texto sobreposto dentro do próprio campo, alinhado
+     à direita (padrão do Figma: sem ícone, sem fundo, só texto azul). */
+  .paste-input-wrap { position: relative; }
+  .paste-input { padding-right: 160px; }
+  .paste-link {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
+    background: var(--color-blue-light-5);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    margin: 0;
+    cursor: pointer;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-md);
+    color: var(--color-blue-400);
+    white-space: nowrap;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .paste-link:hover { color: var(--color-blue-600); background: var(--color-blue-light-10); }
+
+  /* Select (form-field composto com Dropdown ancorado) */
+  .select-anchor { position: relative; }
+  .select-anchor .dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding: 8px;
+    display: none;
+    width: max-content;
+    min-width: 100%;
+  }
+  .select-anchor .dropdown__group { display: flex; flex-direction: column; gap: 2px; }
+  .select-anchor.is-open .dropdown { display: block; }
+  .select-anchor .form-field__input { cursor: pointer; }
+
+  /* Linha do Plano: select + resumo lado a lado, alinhados pela base — o resumo
+     não tem rótulo em cima, então ignora a altura do título "Plano" e acompanha
+     só a altura da caixa de seleção (36px). */
+  .plano-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  /* Resumo clicável do plano — prévia sempre visível, abre a modal de detalhamento.
+     "Ver detalhamento" fica DENTRO da mesma caixa, alinhado à direita — a caixa
+     inteira é um único alvo de clique, então o CTA precisa estar visualmente junto. */
+  .plano-summary {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px;
+    box-sizing: border-box;
+    text-align: left;
+    padding: 0 12px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    background: var(--color-gray-50);
+    cursor: pointer;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .plano-summary:hover { border-color: var(--color-blue-400); background: var(--color-blue-light-5); }
+  .plano-summary span#plano-resumo-texto {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .plano-summary__mais { color: var(--color-blue-400); font-weight: var(--font-weight-semibold); }
+  .plano-summary__ver {
+    flex-shrink: 0;
+    white-space: nowrap;
+    color: var(--color-blue-400);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Date picker ancorado no campo de data */
+  .date-field { position: relative; }
+  .date-field .date-picker {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    display: none;
+  }
+  .date-field.is-open .date-picker { display: inline-flex; }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Ícone da tag "IA" — definido uma vez, reutilizado em todos os badges (copiado do protótipo de referência) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <linearGradient id="iadg1" x1="-2.75" y1="-1.75" x2="10" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#825DCB"/>
+      <stop offset="0.546" stop-color="#E663C9"/>
+      <stop offset="1" stop-color="#FF756B"/>
+    </linearGradient>
+    <linearGradient id="iadg2" x1="10" y1="-0.5" x2="3.5" y2="7.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D66D0"/>
+      <stop offset="1" stop-color="#E663C9" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="iadg3" x1="5.6" y1="1" x2="5.6" y2="8.2" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white"/>
+      <stop offset="1" stop-color="#FEC5FF"/>
+    </linearGradient>
+    <linearGradient id="iadg4" x1="6.51" y1="3.04" x2="-0.29" y2="3.18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white"/>
+      <stop offset="1" stop-color="#FEC5FF"/>
+    </linearGradient>
+    <filter id="iadf1" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="rgba(130,93,203,0.4)"/>
+    </filter>
+    <clipPath id="iadclip"><rect width="12" height="12"/></clipPath>
+    <symbol id="ia-icon" viewBox="0 0 12 12" overflow="hidden">
+      <g clip-path="url(#iadclip)">
+        <circle cx="6" cy="6" r="5.5" fill="url(#iadg1)"/>
+        <circle cx="6" cy="6" r="5.5" fill="url(#iadg2)" fill-opacity="0.5"/>
+        <g transform="translate(0.4,1.4)" filter="url(#iadf1)">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.39958 3.17799C7.23618 3.09629 7.1037 2.9638 7.022 2.80041L6.22145 1.46671C5.91031 0.844429 5.26616 0.844429 4.95501 1.46671L4.17799 2.80041C4.09629 2.9638 3.9638 3.09629 3.80041 3.17799L2.46671 3.95501C1.84443 4.26616 1.84443 4.91031 2.46671 5.22145L3.80041 6.022C3.9638 6.1037 4.09629 6.23618 4.17799 6.39958L4.95501 7.73328C5.26616 8.35556 5.91031 8.35556 6.22145 7.73328L7.022 6.39958C7.1037 6.23618 7.23618 6.1037 7.39958 6.022L8.73328 5.22145C9.35556 4.91031 9.35556 4.26616 8.73328 3.95501L7.39958 3.17799Z" fill="url(#iadg3)"/>
+        </g>
+        <g transform="translate(6,6) rotate(45) translate(-3.182,-3.182)">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M4.7726 1.92509C4.62818 1.85288 4.51108 1.73578 4.43887 1.59136L3.73128 0.41252C3.45626 -0.137507 2.88691 -0.137507 2.61189 0.41252L1.92509 1.59136C1.85288 1.73578 1.73578 1.85288 1.59136 1.92509L0.412519 2.61189C-0.137507 2.88691 -0.137506 3.45626 0.41252 3.73128L1.59136 4.43887C1.73578 4.51108 1.85288 4.62818 1.92509 4.77261L2.61189 5.95144C2.88691 6.50147 3.45626 6.50147 3.73128 5.95144L4.43887 4.7726C4.51108 4.62818 4.62818 4.51108 4.77261 4.43887L5.95144 3.73128C6.50147 3.45626 6.50147 2.88691 5.95144 2.61189L4.7726 1.92509Z" fill="url(#iadg4)"/>
+        </g>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="app-shell">
+  <aside class="nav-sidebar">
+    <div class="nav-logo">
+      <img src="assets/img/logo-infoprice.png" alt="InfoPrice" />
+    </div>
+    <div class="nav-icons">
+      <button class="nav-btn" title="Home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9.99961 19V14H13.9996V19C13.9996 19.55 14.4496 20 14.9996 20H17.9996C18.5496 20 18.9996 19.55 18.9996 19V12H20.6996C21.1596 12 21.3796 11.43 21.0296 11.13L12.6696 3.6C12.2896 3.26 11.7096 3.26 11.3296 3.6L2.96961 11.13C2.62961 11.43 2.83961 12 3.29961 12H4.99961V19C4.99961 19.55 5.44961 20 5.99961 20H8.99961C9.54961 20 9.99961 19.55 9.99961 19Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Desempenho">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16.8505 6.85L18.2905 8.29L13.4105 13.17L10.1205 9.88C9.73047 9.49 9.10047 9.49 8.71047 9.88L2.71047 15.89C2.32047 16.28 2.32047 16.91 2.71047 17.3C3.10047 17.69 3.73047 17.69 4.12047 17.3L9.41047 12L12.7005 15.29C13.0905 15.68 13.7205 15.68 14.1105 15.29L19.7005 9.71L21.1405 11.15C21.4505 11.46 21.9905 11.24 21.9905 10.8V6.5C22.0005 6.22 21.7805 6 21.5005 6H17.2105C16.7605 6 16.5405 6.54 16.8505 6.85Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn nav-btn--active" title="Contratos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 11C14 11.55 13.55 12 13 12H4C3.45 12 3 11.55 3 11C3 10.45 3.45 10 4 10H13C13.55 10 14 10.45 14 11ZM3 7C3 7.55 3.45 8 4 8H13C13.55 8 14 7.55 14 7C14 6.45 13.55 6 13 6H4C3.45 6 3 6.45 3 7ZM10 15C10 14.45 9.55 14 9 14H4C3.45 14 3 14.45 3 15C3 15.55 3.45 16 4 16H9C9.55 16 10 15.55 10 15ZM18.01 12.87L18.72 12.16C19.11 11.77 19.74 11.77 20.13 12.16L20.84 12.87C21.23 13.26 21.23 13.89 20.84 14.28L20.13 14.99L18.01 12.87ZM17.3 13.58L12.14 18.74C12.05 18.83 12 18.95 12 19.09V20.5C12 20.78 12.22 21 12.5 21H13.91C14.04 21 14.17 20.95 14.26 20.85L19.42 15.69L17.3 13.58Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="ISA Barcode">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.65332 18.1025H3V5H4.65332V18.1025ZM6.87402 18.1025H6.02246V5H6.87402V18.1025ZM8.95312 18.1025H8.10254V5H8.95312V18.1025ZM10.5361 18.1025H9.68457V5H10.5361V18.1025ZM12.1182 18.1025H11.2686V5H12.1182V18.1025ZM15.708 5V18.1025H13.8184V5H15.708ZM17.7881 18.1025H16.9375V5H17.7881V18.1025ZM19.3711 18.1025H18.5195V5H19.3711V18.1025ZM21 18.1025H20.0547V5H21V18.1025Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Configurações">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.4997 12C19.4997 11.77 19.4897 11.55 19.4697 11.32L21.3297 9.91C21.7297 9.61 21.8397 9.05 21.5897 8.61L19.7197 5.38C19.4697 4.94 18.9297 4.76 18.4697 4.96L16.3197 5.87C15.9497 5.61 15.5597 5.38 15.1497 5.19L14.8597 2.88C14.7997 2.38 14.3697 2 13.8697 2H10.1397C9.62967 2 9.19967 2.38 9.13967 2.88L8.84967 5.19C8.43967 5.38 8.04967 5.61 7.67967 5.87L5.52967 4.96C5.06967 4.76 4.52967 4.94 4.27967 5.38L2.40967 8.62C2.15967 9.06 2.26967 9.61 2.66967 9.92L4.52967 11.33C4.50967 11.55 4.49967 11.77 4.49967 12C4.49967 12.23 4.50967 12.45 4.52967 12.68L2.66967 14.09C2.26967 14.39 2.15967 14.95 2.40967 15.39L4.27967 18.62C4.52967 19.06 5.06967 19.24 5.52967 19.04L7.67967 18.13C8.04967 18.39 8.43967 18.62 8.84967 18.81L9.13967 21.12C9.19967 21.62 9.62967 22 10.1297 22H13.8597C14.3597 22 14.7897 21.62 14.8497 21.12L15.1397 18.81C15.5497 18.62 15.9397 18.39 16.3097 18.13L18.4597 19.04C18.9197 19.24 19.4597 19.06 19.7097 18.62L21.5797 15.39C21.8297 14.95 21.7197 14.4 21.3197 14.09L19.4597 12.68C19.4897 12.45 19.4997 12.23 19.4997 12ZM12.0397 15.5C10.1097 15.5 8.53967 13.93 8.53967 12C8.53967 10.07 10.1097 8.5 12.0397 8.5C13.9697 8.5 15.5397 10.07 15.5397 12C15.5397 13.93 13.9697 15.5 12.0397 15.5Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Lista">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 14H6C6.55 14 7 13.55 7 13V11C7 10.45 6.55 10 6 10H4C3.45 10 3 10.45 3 11V13C3 13.55 3.45 14 4 14ZM4 19H6C6.55 19 7 18.55 7 18V16C7 15.45 6.55 15 6 15H4C3.45 15 3 15.45 3 16V18C3 18.55 3.45 19 4 19ZM4 9H6C6.55 9 7 8.55 7 8V6C7 5.45 6.55 5 6 5H4C3.45 5 3 5.45 3 6V8C3 8.55 3.45 9 4 9ZM9 14H20C20.55 14 21 13.55 21 13V11C21 10.45 20.55 10 20 10H9C8.45 10 8 10.45 8 11V13C8 13.55 8.45 14 9 14ZM9 19H20C20.55 19 21 18.55 21 18V16C21 15.45 20.55 15 20 15H9C8.45 15 8 15.45 8 16V18C8 18.55 8.45 19 9 19ZM8 6V8C8 8.55 8.45 9 9 9H20C20.55 9 21 8.55 21 8V6C21 5.45 20.55 5 20 5H9C8.45 5 8 5.45 8 6Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Feed">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8L16 3ZM8 7H11C11.55 7 12 7.45 12 8C12 8.55 11.55 9 11 9H8C7.45 9 7 8.55 7 8C7 7.45 7.45 7 8 7ZM16 17H8C7.45 17 7 16.55 7 16C7 15.45 7.45 15 8 15H16C16.55 15 17 15.45 17 16C17 16.55 16.55 17 16 17ZM16 13H8C7.45 13 7 12.55 7 12C7 11.45 7.45 11 8 11H16C16.55 11 17 11.45 17 12C17 12.55 16.55 13 16 13ZM15 8V5L19 9H16C15.45 9 15 8.55 15 8Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Busca">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15.9762 14.4716H15.1862L14.9062 14.2016C16.1062 12.8016 16.7262 10.8916 16.3862 8.86157C15.9162 6.08157 13.5962 3.86157 10.7962 3.52157C6.56621 3.00157 3.00621 6.56157 3.52621 10.7916C3.86621 13.5916 6.08621 15.9116 8.86621 16.3816C10.8962 16.7216 12.8062 16.1016 14.2062 14.9016L14.4762 15.1816V15.9716L18.7262 20.2216C19.1362 20.6316 19.8062 20.6316 20.2162 20.2216C20.6262 19.8116 20.6262 19.1416 20.2162 18.7316L15.9762 14.4716ZM9.97621 14.4716C7.48621 14.4716 5.47621 12.4616 5.47621 9.97157C5.47621 7.48157 7.48621 5.47157 9.97621 5.47157C12.4662 5.47157 14.4762 7.48157 14.4762 9.97157C14.4762 12.4616 12.4662 14.4716 9.97621 14.4716Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Download">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16.59 9.5H15V4.5C15 3.95 14.55 3.5 14 3.5H10C9.45 3.5 9 3.95 9 4.5V9.5H7.41C6.52 9.5 6.07 10.58 6.7 11.21L11.29 15.8C11.68 16.19 12.31 16.19 12.7 15.8L17.29 11.21C17.92 10.58 17.48 9.5 16.59 9.5ZM5 19.5C5 20.05 5.45 20.5 6 20.5H18C18.55 20.5 19 20.05 19 19.5C19 18.95 18.55 18.5 18 18.5H6C5.45 18.5 5 18.95 5 19.5Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Teclado">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 5H4C2.9 5 2.01 5.9 2.01 7L2 17C2 18.1 2.9 19 4 19H20C21.1 19 22 18.1 22 17V7C22 5.9 21.1 5 20 5ZM11 8H13V10H11V8ZM11 11H13V13H11V11ZM8 8H10V10H8V8ZM8 11H10V13H8V11ZM7 13H5V11H7V13ZM7 10H5V8H7V10ZM15 17H9C8.45 17 8 16.55 8 16C8 15.45 8.45 15 9 15H15C15.55 15 16 15.45 16 16C16 16.55 15.55 17 15 17ZM16 13H14V11H16V13ZM16 10H14V8H16V10ZM19 13H17V11H19V13ZM19 10H17V8H19V10Z" fill="white"/></svg>
+      </button>
+      <button class="nav-btn" title="Sair">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10.79 16.29C11.18 16.68 11.81 16.68 12.2 16.29L15.79 12.7C16.18 12.31 16.18 11.68 15.79 11.29L12.2 7.7C11.81 7.31 11.18 7.31 10.79 7.7C10.4 8.09 10.4 8.72 10.79 9.11L12.67 11H4C3.45 11 3 11.45 3 12C3 12.55 3.45 13 4 13H12.67L10.79 14.88C10.4 15.27 10.41 15.91 10.79 16.29ZM19 3H5C3.89 3 3 3.9 3 5V8C3 8.55 3.45 9 4 9C4.55 9 5 8.55 5 8V6C5 5.45 5.45 5 6 5H18C18.55 5 19 5.45 19 6V18C19 18.55 18.55 19 18 19H6C5.45 19 5 18.55 5 18V16C5 15.45 4.55 15 4 15C3.45 15 3 15.45 3 16V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z" fill="white"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="app-main">
+    <header class="topbar">
+      <nav class="topbar-breadcrumb">
+        <a href="#">Contratos</a>
+        <span class="sep"> ›</span>
+        <span class="current"> Contrato</span>
+      </nav>
+      <div class="topbar-user">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        natalia.magnus@infoprice.co
+      </div>
+    </header>
+
+    <main class="page">
+
+      <!-- ═══════════════════ Edição de Contrato ═══════════════════ -->
+      <section class="card">
+        <h1 class="card__title" id="titulo-pagina">Edição de Contrato</h1>
+
+        <div class="field-grid">
+          <div class="form-field">
+            <div class="field-label-row">
+              <label class="form-field__label" style="margin-bottom:0;">
+                <span class="form-field__required" aria-hidden="true">*</span>
+                Cliente
+              </label>
+              <button class="btn-link btn-link--small" type="button" id="btn-novo-cliente">
+                <span class="btn-link__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1Z"/></svg>
+                </span>
+                <span class="btn-link__label">Adicionar novo cliente</span>
+              </button>
+            </div>
+            <div id="cliente-mount"></div>
+          </div>
+
+          <div class="form-field form-field--disabled">
+            <label class="form-field__label" for="organizacao">Organização</label>
+            <div class="form-field__box">
+              <input class="form-field__input" id="organizacao" type="text" value="" placeholder="Selecione um cliente" disabled />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="responsavel">
+              <span class="form-field__required" aria-hidden="true">*</span>
+              Responsável
+            </label>
+            <div id="responsavel-mount"></div>
+          </div>
+        </div>
+
+        <div class="field-grid field-grid--contrato-row2">
+          <div class="datas-par">
+            <div class="form-field form-field--button-right date-field" id="field-data-inicio">
+              <label class="form-field__label" for="data-inicio">
+                <span class="form-field__required" aria-hidden="true">*</span>
+                Data início
+              </label>
+              <div class="form-field__box">
+                <input class="form-field__input" id="data-inicio" type="text" value="" readonly data-date-input />
+                <button class="form-field__button" type="button" aria-label="Abrir calendário" data-date-trigger>
+                  <svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field form-field--button-right date-field" id="field-data-fim">
+              <label class="form-field__label" for="data-fim">
+                <span class="form-field__required" aria-hidden="true">*</span>
+                Data fim
+              </label>
+              <div class="form-field__box">
+                <input class="form-field__input" id="data-fim" type="text" value="" placeholder="Selecione a data" readonly data-date-input />
+                <button class="form-field__button" type="button" aria-label="Abrir calendário" data-date-trigger>
+                  <svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="mrr">MRR</label>
+            <div class="form-field__box">
+              <span class="form-field__prefix" aria-hidden="true">R$</span>
+              <input class="form-field__input" id="mrr" type="text" inputmode="decimal" value="" placeholder="0,00" />
+            </div>
+          </div>
+
+          <div>
+            <span class="field-group__caption">Contrato ativo</span>
+            <div class="radio-row">
+              <label class="radio">
+                <input class="radio__input" type="radio" name="ativo" checked />
+                <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+                <span class="radio__content"><span class="radio__label">Sim</span></span>
+              </label>
+              <label class="radio">
+                <input class="radio__input" type="radio" name="ativo" />
+                <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+                <span class="radio__content"><span class="radio__label">Não</span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Abrangência ═══════════════════ -->
+      <section class="card">
+        <div class="card__title-row">
+          <h2 class="card__title">Escopo do contrato</h2>
+        </div>
+        <div class="card__helper-block">
+          <p class="card__helper">O universo de dados do cliente é o mesmo em qualquer plano contratado.</p>
+        </div>
+
+        <div class="field-grid" style="grid-template-columns: 1fr 2fr;">
+          <div class="subsection">
+            <span class="field-group__caption">Bundle</span>
+            <div class="radio-row">
+              <label class="radio">
+                <input class="radio__input" type="radio" name="bundle" value="varejo" />
+                <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+                <span class="radio__content"><span class="radio__label">Varejo</span></span>
+              </label>
+              <label class="radio">
+                <input class="radio__input" type="radio" name="bundle" value="industria" />
+                <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+                <span class="radio__content"><span class="radio__label">Indústria</span></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <span class="field-group__caption">Canais</span>
+            <div class="chip-row" id="canais-group">
+              <button class="chip" type="button" data-value="alimentar">
+                <span class="chip__content"><span class="chip__text">Alimentar e outros</span></span>
+              </button>
+              <button class="chip" type="button" data-value="farma">
+                <span class="chip__content"><span class="chip__text">Farma</span></span>
+              </button>
+              <button class="chip" type="button" data-value="especializadas">
+                <span class="chip__content"><span class="chip__text">Lojas especializadas</span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="canais-tipos-stack">
+          <div class="form-field canais-tipos-field" id="canal-campo-alimentar" data-canal-campo="alimentar" hidden>
+            <label class="form-field__label">Tipos — Alimentar e outros</label>
+            <div data-ms-mount></div>
+          </div>
+          <div class="form-field canais-tipos-field" id="canal-campo-farma" data-canal-campo="farma" hidden>
+            <label class="form-field__label">Tipos — Farma</label>
+            <div data-ms-mount></div>
+          </div>
+          <div class="form-field canais-tipos-field" id="canal-campo-especializadas" data-canal-campo="especializadas" hidden>
+            <label class="form-field__label">Tipos — Lojas especializadas</label>
+            <div data-ms-mount></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <span class="field-group__caption">Cobertura</span>
+          <div class="chip-row" id="cobertura-group">
+            <button class="chip" type="button" data-value="nacional">
+              <span class="chip__content"><span class="chip__text">Nacional</span></span>
+            </button>
+            <button class="chip" type="button" data-value="regiao">
+              <span class="chip__content"><span class="chip__text">Região</span></span>
+            </button>
+            <button class="chip" type="button" data-value="uf">
+              <span class="chip__content"><span class="chip__text">UF</span></span>
+            </button>
+            <!-- Cidade só existe pra Varejo — escondida via updateBundle() quando o bundle é Indústria -->
+            <button class="chip" type="button" data-value="cidade" id="chip-cidade">
+              <span class="chip__content"><span class="chip__text">Cidade</span></span>
+            </button>
+          </div>
+
+          <div class="conditional-fields">
+            <div class="form-field" id="campo-regiao" hidden>
+              <label class="form-field__label">Região</label>
+              <div data-ms-mount></div>
+            </div>
+            <div class="form-field" id="campo-uf" hidden>
+              <label class="form-field__label">UF</label>
+              <div data-ms-mount></div>
+            </div>
+            <div class="form-field" id="campo-cidade" hidden>
+              <label class="form-field__label">Cidade</label>
+              <div data-ms-mount></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection" id="secao-categoria-block" hidden>
+          <span class="field-group__caption">Seção / Categoria</span>
+          <div class="chip-row" id="secao-categoria-group">
+            <button class="chip chip--filled" type="button" data-value="todos">
+              <span class="chip__content"><span class="chip__text">Todos</span></span>
+            </button>
+            <button class="chip" type="button" data-value="secao">
+              <span class="chip__content"><span class="chip__text">Seção</span></span>
+            </button>
+            <button class="chip" type="button" data-value="categoria">
+              <span class="chip__content"><span class="chip__text">Categoria</span></span>
+            </button>
+            <button class="chip" type="button" data-value="secao-categoria">
+              <span class="chip__content"><span class="chip__text">Seção e categoria</span></span>
+            </button>
+          </div>
+
+          <div class="conditional-fields">
+            <div class="form-field" id="campo-secao" hidden>
+              <label class="form-field__label">Seção</label>
+              <div data-ms-mount></div>
+            </div>
+            <div class="form-field" id="campo-categoria" hidden>
+              <label class="form-field__label">Categoria</label>
+              <div data-ms-mount></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Plano ═══════════════════ -->
+      <section class="card">
+        <h2 class="card__title">Plano</h2>
+
+        <div class="plano-row">
+          <div style="width: 280px; max-width: 100%; flex-shrink: 0;">
+            <div class="form-field form-field--disabled select-anchor" id="plano-select">
+              <label class="form-field__label" for="plano-input">Plano</label>
+              <div class="form-field__box">
+                <input class="form-field__input" id="plano-input" type="text" value="" placeholder="Selecione um plano" readonly disabled aria-haspopup="listbox" />
+                <span class="form-field__chevron" aria-hidden="true" id="plano-chevron">
+                  <svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.8803 15.7076L6.29237 11.1197C5.90254 10.7299 5.90254 10.1001 6.29237 9.71032C6.68219 9.32049 7.31191 9.32049 7.70174 9.71032L11.59 13.5886L15.4683 9.71032C15.8581 9.32049 16.4878 9.32049 16.8776 9.71032C17.2675 10.1001 17.2675 10.7299 16.8776 11.1197L12.2897 15.7076C11.9099 16.0975 11.2701 16.0975 10.8803 15.7076Z"/></svg>
+                </span>
+              </div>
+              <p class="form-field__caption" id="plano-bloqueado-msg">Selecione um bundle acima para ver as opções de plano disponíveis.</p>
+              <div class="dropdown" role="menu">
+                <div class="dropdown__group">
+                  <button class="dropdown__item" type="button" role="menuitem" data-plano="Essential">Essential</button>
+                  <button class="dropdown__item" type="button" role="menuitem" data-plano="Pro">Pro</button>
+                  <button class="dropdown__item" type="button" role="menuitem" data-plano="Enterprise">Enterprise</button>
+                  <button class="dropdown__item" type="button" role="menuitem" data-plano="Trial">Trial</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="plano-summary" type="button" id="btn-plano-resumo" hidden>
+            <span id="plano-resumo-texto"></span>
+            <span class="plano-summary__ver">Ver detalhamento</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Adicionais ═══════════════════ -->
+      <!-- só aparece depois que um plano é selecionado (fluxo de criação) -->
+      <section class="card" id="secao-adicionais" hidden>
+        <h2 class="card__title">Adicionais</h2>
+
+        <div class="adicionais-list" id="adicionais-varejo">
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="otimizacao" />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Otimização</span>
+            <span class="ia-badge"><svg width="12" height="12"><use href="#ia-icon"></use></svg>IA</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="dados-shopping" />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Dados Shopping Brasil</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="segmentos-personalizados" disabled />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Segmentos Personalizados</span>
+            <span class="adicional-row__lock-msg" data-segpers-lock-msg>Disponível nos planos Pro, Enterprise e Trial.</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="pdv" data-pdv-toggle />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Pesquisa PDV (Comodato e API)</span>
+            <div class="adicional-row__sub" data-pdv-sub hidden>
+              <label class="switch switch--sm"><input type="checkbox" data-pdv-tipo="comodato" /><span class="switch__track" aria-hidden="true"></span></label>
+              <span class="adicional-row__sublabel">Comodato</span>
+              <label class="switch switch--sm"><input type="checkbox" data-pdv-tipo="api" /><span class="switch__track" aria-hidden="true"></span></label>
+              <span class="adicional-row__sublabel">API</span>
+            </div>
+          </div>
+          <div class="adicional-row adicional-row--pacotes">
+            <label class="switch">
+              <input type="checkbox" data-adicional="pacotes" data-pacotes-toggle />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Pacotes adicionais on demand</span>
+            <span class="adicional-row__lock-msg" data-pacotes-lock-msg hidden>Escolha um plano com solicitações sob demanda ativas para adicionar pacotes.</span>
+            <div class="adicional-row__stepper" data-pacotes-stepper hidden>
+              <button type="button" class="stepper__btn" data-pacotes-step="-1" aria-label="Diminuir pacotes">−</button>
+              <span class="stepper__count" data-pacotes-count>0</span>
+              <button type="button" class="stepper__btn" data-pacotes-step="1" aria-label="Aumentar pacotes">+</button>
+              <span class="stepper__summary" data-pacotes-summary></span>
+            </div>
+          </div>
+
+          <div class="adicionais-group" data-adicionais-group="alertas-nativo">
+            <span class="adicionais-group__title">Alertas e Monitoramentos</span>
+            <div class="adicional-row" data-alerta-row="modulo-competitividade">
+              <label class="switch">
+                <input type="checkbox" data-alerta="modulo-competitividade" disabled />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Módulo de Competitividade</span>
+              <span class="adicional-row__lock-msg" data-alerta-lock-msg>Disponível a partir do plano Pro, quando o Módulo de Competitividade está incluso.</span>
+            </div>
+            <div class="adicional-row" data-alerta-row="aderencia-competitividade">
+              <label class="switch">
+                <input type="checkbox" data-alerta="aderencia-competitividade" disabled />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Aderência de Competitividade</span>
+              <span class="adicional-row__lock-msg" data-alerta-lock-msg>Disponível quando o adicional Aderência de Competitividade estiver ativo.</span>
+            </div>
+          </div>
+
+          <!-- Bundle misto: recursos exclusivos do Enterprise do próprio Varejo, liberados
+               como adicionais individuais só no plano Pro (no Enterprise já vêm inclusos). -->
+          <div class="adicionais-group" data-adicionais-group="bundle-misto-pro" hidden>
+            <span class="adicionais-group__title">Recursos do plano Enterprise</span>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="simulador-demanda-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Simulador de Demanda</span>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="sensibilidade-infoprice-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Sensibilidade InfoPrice</span>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="ipa-analytics-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">IPA Analytics</span>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="integracao-ftp-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Integração FTP (InfoPanel)</span>
+            </div>
+          </div>
+
+          <!-- Bundle misto: recursos exclusivos da Indústria, liberados como adicionais
+               individuais no Pro, Enterprise e Trial (cliente também atua na Indústria). -->
+          <div class="adicionais-group" data-adicionais-group="bundle-misto-industria" hidden>
+            <span class="adicionais-group__title">Elasticidade Cruzada</span>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="elasticidade-cruzada-mod" data-elasticidade-toggle />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Elasticidade Cruzada</span>
+              <div class="adicional-row__skus" data-elasticidade-skus hidden>
+                <span class="adicional-row__sublabel">SKUs contratados</span>
+                <input type="text" inputmode="numeric" placeholder="0" />
+              </div>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="aderencia-competitividade-mod" data-aderencia-mod-toggle />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Aderência de Competitividade</span>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="visao-geral-elasticidade-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Visão Geral de Elasticidade</span>
+            </div>
+          </div>
+
+          <div class="adicionais-group" data-adicionais-group="bundle-misto-industria" hidden>
+            <span class="adicionais-group__title">Outros recursos da Indústria</span>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="modulo-aderencia-precos-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Módulo de Aderência de Preços</span>
+            </div>
+            <div class="adicional-row">
+              <label class="switch">
+                <input type="checkbox" data-adicional="gestao-tabelas-mod" />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Gestão de tabelas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="adicionais-list" id="adicionais-industria" hidden>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="gestao-tabelas" />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Gestão de tabelas</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="segmentos-personalizados" disabled />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Segmentos Personalizados</span>
+            <span class="adicional-row__lock-msg" data-segpers-lock-msg>Disponível nos planos Pro, Enterprise e Trial.</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="pdv-ind" data-pdv-toggle />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Pesquisa PDV (Comodato e API)</span>
+            <div class="adicional-row__sub" data-pdv-sub hidden>
+              <label class="switch switch--sm"><input type="checkbox" data-pdv-tipo="comodato" /><span class="switch__track" aria-hidden="true"></span></label>
+              <span class="adicional-row__sublabel">Comodato</span>
+              <label class="switch switch--sm"><input type="checkbox" data-pdv-tipo="api" /><span class="switch__track" aria-hidden="true"></span></label>
+              <span class="adicional-row__sublabel">API</span>
+            </div>
+          </div>
+          <div class="adicional-row adicional-row--pacotes">
+            <label class="switch">
+              <input type="checkbox" data-adicional="pacotes-ind" data-pacotes-toggle />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Pacotes adicionais on demand</span>
+            <span class="adicional-row__lock-msg" data-pacotes-lock-msg hidden>Escolha um plano com solicitações sob demanda ativas para adicionar pacotes.</span>
+            <div class="adicional-row__stepper" data-pacotes-stepper hidden>
+              <button type="button" class="stepper__btn" data-pacotes-step="-1" aria-label="Diminuir pacotes">−</button>
+              <span class="stepper__count" data-pacotes-count>0</span>
+              <button type="button" class="stepper__btn" data-pacotes-step="1" aria-label="Aumentar pacotes">+</button>
+              <span class="stepper__summary" data-pacotes-summary></span>
+            </div>
+          </div>
+
+          <div class="adicionais-group" data-adicionais-group="alertas-nativo">
+            <span class="adicionais-group__title">Alertas e Monitoramentos</span>
+            <div class="adicional-row" data-alerta-row="modulo-competitividade">
+              <label class="switch">
+                <input type="checkbox" data-alerta="modulo-competitividade" disabled />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Módulo de Competitividade</span>
+              <span class="adicional-row__lock-msg" data-alerta-lock-msg>Disponível a partir do plano Pro, quando o Módulo de Competitividade está incluso.</span>
+            </div>
+            <div class="adicional-row" data-alerta-row="aderencia-competitividade">
+              <label class="switch">
+                <input type="checkbox" data-alerta="aderencia-competitividade" disabled />
+                <span class="switch__track" aria-hidden="true"></span>
+              </label>
+              <span class="adicional-row__label">Aderência de Competitividade</span>
+              <span class="adicional-row__lock-msg" data-alerta-lock-msg>Disponível a partir do plano Pro, quando o módulo Aderência de Competitividade está incluso.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Domínios ═══════════════════ -->
+      <section class="card">
+        <h2 class="card__title">Domínios</h2>
+        <p class="card__helper" style="margin-bottom: 16px;">Domínios que terão acesso ao produto.</p>
+
+        <div class="list-section">
+          <div class="list-section__row">
+            <div class="form-field" style="margin-bottom: 0;">
+              <div class="form-field__box paste-input-wrap">
+                <input class="form-field__input paste-input" type="text" id="dominio-input" placeholder="Adicione um domínio" />
+                <button class="paste-link" type="button" id="btn-dominio-colar">Colar lista de domínios</button>
+              </div>
+            </div>
+            <button class="btn-primary" type="button" id="btn-dominio-adicionar"><span class="btn-primary__label">Adicionar</span></button>
+          </div>
+
+          <div class="list-table">
+            <div class="list-table__header">
+              <span class="list-table__col">Domínio</span>
+              <span style="width: 28px; flex-shrink: 0;"></span>
+            </div>
+            <div id="dominio-tbody">
+              <p class="list-table__empty" id="dominio-vazio">Nenhum domínio adicionado ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Administradores ═══════════════════ -->
+      <section class="card">
+        <h2 class="card__title">Administradores</h2>
+        <p class="card__helper" style="margin-bottom: 16px;">Administradores da conta, com acesso privilegiado. O nome é localizado automaticamente a partir do e-mail.</p>
+
+        <div class="list-section">
+          <div class="list-section__row">
+            <div class="form-field" style="margin-bottom: 0;">
+              <div class="form-field__box paste-input-wrap">
+                <input class="form-field__input paste-input" type="text" id="administrador-input" placeholder="Adicione um administrador pelo e-mail" />
+                <button class="paste-link" type="button" id="btn-administrador-colar">Colar lista de administradores</button>
+              </div>
+            </div>
+            <button class="btn-primary" type="button" id="btn-administrador-adicionar"><span class="btn-primary__label">Adicionar</span></button>
+          </div>
+
+          <div class="list-table">
+            <div class="list-table__header">
+              <span class="list-table__col">Nome</span>
+              <span class="list-table__col">E-mail</span>
+              <span style="width: 28px; flex-shrink: 0;"></span>
+            </div>
+            <div id="administrador-tbody">
+              <p class="list-table__empty" id="administrador-vazio">Nenhum administrador adicionado ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Usuários ═══════════════════ -->
+      <section class="card">
+        <h2 class="card__title">Usuários</h2>
+        <p class="card__helper" style="margin-bottom: 16px;">Usuários que terão acesso ao produto. O nome é localizado automaticamente a partir do e-mail.</p>
+
+        <div class="list-section">
+          <div class="list-section__row">
+            <div class="form-field" style="margin-bottom: 0;">
+              <div class="form-field__box paste-input-wrap">
+                <input class="form-field__input paste-input" type="text" id="usuario-input" placeholder="Adicione um usuário pelo e-mail" />
+                <button class="paste-link" type="button" id="btn-usuario-colar">Colar lista de usuários</button>
+              </div>
+            </div>
+            <button class="btn-primary" type="button" id="btn-usuario-adicionar"><span class="btn-primary__label">Adicionar</span></button>
+          </div>
+
+          <div class="list-table">
+            <div class="list-table__header">
+              <span class="list-table__col">Nome</span>
+              <span class="list-table__col">E-mail</span>
+              <span style="width: 28px; flex-shrink: 0;"></span>
+            </div>
+            <div id="usuario-tbody">
+              <p class="list-table__empty" id="usuario-vazio">Nenhum usuário adicionado ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ Ações da página ═══════════════════ -->
+      <div class="page-actions">
+        <button class="btn-primary btn-primary--ghost" type="button" id="btn-cancelar">
+          <span class="btn-primary__label">Cancelar</span>
+        </button>
+        <button class="btn-primary" type="button" id="btn-salvar">
+          <span class="btn-primary__label">Salvar</span>
+        </button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-detalhamento">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-detalhamento-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-detalhamento-title">Detalhamento do plano</h2>
+        <p class="modal__subtitle" id="modal-detalhamento-subtitle">Bundle Varejo · Plano Pro</p>
+      </div>
+      <button class="modal__close" type="button" id="modal-detalhamento-close" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body" id="modal-detalhamento-body">
+      <!-- preenchido via JS a partir de PLAN_MATRIX -->
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-colar-dominio">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-colar-dominio-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-colar-dominio-title">Colar lista de domínios</h2>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-colar-dominio" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">Cole abaixo uma lista de domínios, um por linha.</p>
+      <textarea class="paste-textarea" id="dominio-paste-textarea" placeholder="infoprice.co&#10;ext.infoprice.co&#10;gmail.com"></textarea>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-colar-dominio"><span class="btn-primary__label">Cancelar</span></button>
+      <button class="btn-primary" type="button" id="btn-dominio-colar-confirmar"><span class="btn-primary__label">Adicionar domínios</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-colar-administrador">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-colar-administrador-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-colar-administrador-title">Colar lista de administradores</h2>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-colar-administrador" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">Cole abaixo uma lista de e-mails de administradores, um por linha. Localizamos automaticamente o nome de quem já está cadastrado.</p>
+      <textarea class="paste-textarea" id="administrador-paste-textarea" placeholder="victor.neves@infoprice.co&#10;amanda.queiroz@infoprice.co"></textarea>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-colar-administrador"><span class="btn-primary__label">Cancelar</span></button>
+      <button class="btn-primary" type="button" id="btn-administrador-colar-confirmar"><span class="btn-primary__label">Adicionar administradores</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-colar-usuario">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-colar-usuario-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-colar-usuario-title">Colar lista de usuários</h2>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-colar-usuario" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">Cole abaixo uma lista de e-mails de usuários, um por linha. Localizamos automaticamente o nome de quem já está cadastrado.</p>
+      <textarea class="paste-textarea" id="usuario-paste-textarea" placeholder="fernanda.lima@cacaushow.com.br&#10;ricardo.alves@cacaushow.com.br"></textarea>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-colar-usuario"><span class="btn-primary__label">Cancelar</span></button>
+      <button class="btn-primary" type="button" id="btn-usuario-colar-confirmar"><span class="btn-primary__label">Adicionar usuários</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirmar-exclusao">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-confirmar-exclusao-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-confirmar-exclusao-title">Remover item</h2>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-confirmar-exclusao" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro" id="modal-confirmar-exclusao-texto"></p>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-confirmar-exclusao"><span class="btn-primary__label">Cancelar</span></button>
+      <button class="btn-primary btn-primary--danger" type="button" id="btn-confirmar-exclusao"><span class="btn-primary__label">Remover</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-erro-campo">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-erro-campo-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-erro-campo-title">Valor inválido</h2>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-erro-campo" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro" id="modal-erro-campo-texto"></p>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary" type="button" data-modal-close="modal-erro-campo"><span class="btn-primary__label">Entendi</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-administradores-nao-encontrados">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-administradores-nao-encontrados-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-administradores-nao-encontrados-title">Alguns administradores não foram encontrados</h2>
+        <p class="modal__subtitle" id="modal-administradores-nao-encontrados-subtitle"></p>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-administradores-nao-encontrados" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">Esses e-mails não correspondem a nenhum administrador cadastrado no nosso sistema:</p>
+      <div class="not-found-list" id="administradores-nao-encontrados-lista"></div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-administradores-nao-encontrados"><span class="btn-primary__label">Fechar</span></button>
+      <button class="btn-primary" type="button" id="btn-ir-adicionar-administradores"><span class="btn-primary__label">Criar novos administradores</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-usuarios-nao-encontrados">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-nao-encontrados-title">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="modal-nao-encontrados-title">Alguns usuários não foram encontrados</h2>
+        <p class="modal__subtitle" id="modal-nao-encontrados-subtitle"></p>
+      </div>
+      <button class="modal__close" type="button" data-modal-close="modal-usuarios-nao-encontrados" aria-label="Fechar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6451 4.36708C19.1718 3.89382 18.4073 3.89382 17.934 4.36708L12 10.289L6.06598 4.35495C5.59272 3.88168 4.82821 3.88168 4.35495 4.35495C3.88168 4.82821 3.88168 5.59272 4.35495 6.06598L10.289 12L4.35495 17.934C3.88168 18.4073 3.88168 19.1718 4.35495 19.6451C4.82821 20.1183 5.59272 20.1183 6.06598 19.6451L12 13.711L17.934 19.6451C18.4073 20.1183 19.1718 20.1183 19.6451 19.6451C20.1183 19.1718 20.1183 18.4073 19.6451 17.934L13.711 12L19.6451 6.06598C20.1062 5.60485 20.1062 4.82821 19.6451 4.36708Z"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p class="modal__intro">Esses e-mails não correspondem a nenhum usuário cadastrado no nosso sistema:</p>
+      <div class="not-found-list" id="nao-encontrados-lista"></div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary btn-primary--ghost" type="button" data-modal-close="modal-usuarios-nao-encontrados"><span class="btn-primary__label">Fechar</span></button>
+      <button class="btn-primary" type="button" id="btn-ir-adicionar-usuarios"><span class="btn-primary__label">Criar novos usuários</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Título da página: "Criação de Contrato" (novo) vs. "Edição de Contrato" (existente).
+  //    Este protótipo representa um contrato já existente (Cacau Show pré-preenchido),
+  //    por isso MODO_CRIACAO fica false por padrão — troque pra true pra ver o outro estado.
+  //    PENDÊNCIA: o fluxo de criação (campos vazios, sem cliente pré-selecionado etc.)
+  //    ainda não foi desenhado — ver memória do projeto.
+  const MODO_CRIACAO = true;
+  document.getElementById('titulo-pagina').textContent = MODO_CRIACAO ? 'Criação de Contrato' : 'Edição de Contrato';
+
+  // ── Bundle: alterna a visibilidade do bloco Seção/Categoria (só existe em Indústria) ──
+  const bundleRadios = document.querySelectorAll('input[name="bundle"]');
+  const secaoCategoriaBlock = document.getElementById('secao-categoria-block');
+  const adicionaisVarejo = document.getElementById('adicionais-varejo');
+  const adicionaisIndustria = document.getElementById('adicionais-industria');
+  function currentBundle() {
+    const checked = document.querySelector('input[name="bundle"]:checked');
+    return checked ? checked.value : null;
+  }
+  function updateBundle() {
+    const bundle = currentBundle();
+    const isIndustria = bundle === 'industria';
+    const isVarejo = bundle === 'varejo';
+    secaoCategoriaBlock.hidden = !isIndustria;
+    adicionaisVarejo.hidden = !isVarejo;
+    adicionaisIndustria.hidden = !isIndustria;
+
+    // Cidade (em Cobertura) só existe no bundle Varejo — some ao trocar pra Indústria,
+    // e se já estava marcada, desmarca e esconde o campo junto.
+    const chipCidade = document.getElementById('chip-cidade');
+    const campoCidadeEl = document.getElementById('campo-cidade');
+    if (chipCidade) {
+      chipCidade.hidden = isIndustria;
+      if (isIndustria && chipCidade.classList.contains('chip--filled')) {
+        chipCidade.classList.remove('chip--filled');
+        if (campoCidadeEl) campoCidadeEl.hidden = true;
+      }
+    }
+
+    // Plano só fica disponível depois que um bundle é escolhido (a matriz de
+    // planos depende do bundle, então não faz sentido oferecer plano antes).
+    const planoSelectEl = document.getElementById('plano-select');
+    const planoInputEl = document.getElementById('plano-input');
+    const planoBloqueadoMsg = document.getElementById('plano-bloqueado-msg');
+    if (bundle) {
+      planoSelectEl.classList.remove('form-field--disabled');
+      planoInputEl.disabled = false;
+      planoBloqueadoMsg.hidden = true;
+    } else {
+      planoSelectEl.classList.add('form-field--disabled');
+      planoInputEl.disabled = true;
+      planoBloqueadoMsg.hidden = false;
+    }
+
+    if (typeof updateModalSubtitle === 'function') updateModalSubtitle();
+    if (typeof updatePacotesSummaries === 'function') updatePacotesSummaries();
+    if (typeof updatePlanoResumo === 'function') updatePlanoResumo();
+    if (typeof updateBundleMisto === 'function') updateBundleMisto();
+  }
+  bundleRadios.forEach(r => r.addEventListener('change', updateBundle));
+
+  // ── Responsável: select pesquisável (usuários fictícios da empresa) ──
+  // Só o e-mail é exibido (padrão da empresa) — pelo nome do e-mail já dá pra identificar a pessoa.
+  const USUARIOS_FICTICIOS = [
+    { email: 'ananda.ielo@infoprice.co' },
+    { email: 'bruno.tavares@infoprice.co' },
+    { email: 'carla.nunes@infoprice.co' },
+    { email: 'diego.ramos@infoprice.co' },
+    { email: 'eduarda.lima@infoprice.co' },
+    { email: 'felipe.souza@infoprice.co' },
+    { email: 'gabriela.rocha@infoprice.co' },
+    { email: 'henrique.alves@infoprice.co' },
+  ];
+
+  function createSearchableSelect(mountEl, { options, placeholder, initialIndex }) {
+    const wrap = document.createElement('div');
+    wrap.className = 'multiselect';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'form-field__box multiselect__trigger';
+    trigger.innerHTML = `
+      <span class="multiselect__value" data-ms-value>${placeholder}</span>
+      <span class="form-field__chevron" aria-hidden="true"><svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M10.8803 15.7076L6.29237 11.1197C5.90254 10.7299 5.90254 10.1001 6.29237 9.71032C6.68219 9.32049 7.31191 9.32049 7.70174 9.71032L11.59 13.5886L15.4683 9.71032C15.8581 9.32049 16.4878 9.32049 16.8776 9.71032C17.2675 10.1001 17.2675 10.7299 16.8776 11.1197L12.2897 15.7076C11.9099 16.0975 11.2701 16.0975 10.8803 15.7076Z"/></svg></span>
+    `;
+
+    const panel = document.createElement('div');
+    panel.className = 'dropdown multiselect__panel';
+
+    const searchWrap = document.createElement('div');
+    searchWrap.className = 'multiselect__search';
+    searchWrap.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Buscar por nome ou e-mail..." data-ms-search />`;
+    panel.appendChild(searchWrap);
+    const searchInput = searchWrap.querySelector('input');
+
+    const optionsEl = document.createElement('div');
+    optionsEl.className = 'multiselect__options';
+    const valueEl = trigger.querySelector('[data-ms-value]');
+    options.forEach(opt => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'searchable-select__option';
+      row.innerHTML = `<span class="searchable-select__email">${opt.email}</span>`;
+      row.addEventListener('click', () => {
+        valueEl.textContent = opt.email;
+        valueEl.classList.add('has-value');
+        wrap.classList.remove('is-open');
+      });
+      optionsEl.appendChild(row);
+    });
+    panel.appendChild(optionsEl);
+
+    const emptyEl = document.createElement('p');
+    emptyEl.className = 'multiselect__empty';
+    emptyEl.textContent = 'Nenhum usuário encontrado';
+    emptyEl.hidden = true;
+    panel.appendChild(emptyEl);
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(panel);
+    mountEl.appendChild(wrap);
+
+    if (initialIndex != null) {
+      valueEl.textContent = options[initialIndex].email;
+      valueEl.classList.add('has-value');
+    }
+
+    trigger.addEventListener('click', () => {
+      document.querySelectorAll('.multiselect.is-open').forEach(other => { if (other !== wrap) other.classList.remove('is-open'); });
+      wrap.classList.toggle('is-open');
+    });
+
+    searchInput.addEventListener('click', e => e.stopPropagation());
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+      optionsEl.querySelectorAll('.searchable-select__option').forEach(row => {
+        const match = !term || row.textContent.toLowerCase().includes(term);
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      emptyEl.hidden = visible !== 0;
+    });
+
+    return wrap;
+  }
+
+  createSearchableSelect(document.getElementById('responsavel-mount'), {
+    options: USUARIOS_FICTICIOS,
+    placeholder: 'Selecione um responsável',
+  });
+
+  // ── Cliente: select pesquisável — ao escolher, carrega a Organização associada
+  //    automaticamente (a Organização nunca é digitada à mão, vem sempre do cliente). ──
+  const CLIENTES_FICTICIOS = [
+    { id: '011223', nome: 'Cacau Show', organizacao: 'InfoPrice Customer Success' },
+    { id: '018842', nome: 'Droga Raia', organizacao: 'InfoPrice Customer Success' },
+    { id: '022917', nome: 'Petz', organizacao: 'InfoPrice BizDev' },
+    { id: '034501', nome: 'Grupo Pão de Açúcar', organizacao: 'InfoPrice Comercial' },
+    { id: '041256', nome: 'Ambev', organizacao: 'InfoPrice Customer Success' },
+  ];
+
+  const organizacaoInput = document.getElementById('organizacao');
+
+  function clienteLabel(opt) { return `${opt.id} - ${opt.nome}`; }
+
+  function createClienteSelect(mountEl, { options, placeholder }) {
+    const wrap = document.createElement('div');
+    wrap.className = 'multiselect';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'form-field__box multiselect__trigger';
+    trigger.innerHTML = `
+      <span class="multiselect__value" data-ms-value>${placeholder}</span>
+      <span class="form-field__chevron" aria-hidden="true"><svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M10.8803 15.7076L6.29237 11.1197C5.90254 10.7299 5.90254 10.1001 6.29237 9.71032C6.68219 9.32049 7.31191 9.32049 7.70174 9.71032L11.59 13.5886L15.4683 9.71032C15.8581 9.32049 16.4878 9.32049 16.8776 9.71032C17.2675 10.1001 17.2675 10.7299 16.8776 11.1197L12.2897 15.7076C11.9099 16.0975 11.2701 16.0975 10.8803 15.7076Z"/></svg></span>
+    `;
+
+    const panel = document.createElement('div');
+    panel.className = 'dropdown multiselect__panel';
+
+    const searchWrap = document.createElement('div');
+    searchWrap.className = 'multiselect__search';
+    searchWrap.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Buscar por nome ou código..." data-ms-search />`;
+    panel.appendChild(searchWrap);
+    const searchInput = searchWrap.querySelector('input');
+
+    const optionsEl = document.createElement('div');
+    optionsEl.className = 'multiselect__options';
+    panel.appendChild(optionsEl);
+
+    const emptyEl = document.createElement('p');
+    emptyEl.className = 'multiselect__empty';
+    emptyEl.textContent = 'Nenhum cliente encontrado';
+    emptyEl.hidden = true;
+    panel.appendChild(emptyEl);
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(panel);
+    mountEl.appendChild(wrap);
+
+    const valueEl = trigger.querySelector('[data-ms-value]');
+
+    function selectCliente(opt) {
+      valueEl.textContent = clienteLabel(opt);
+      valueEl.classList.add('has-value');
+      organizacaoInput.value = opt.organizacao || '';
+      organizacaoInput.placeholder = opt.organizacao ? '' : 'Organização a definir';
+      wrap.classList.remove('is-open');
+    }
+
+    function renderOptions() {
+      optionsEl.innerHTML = '';
+      options.forEach(opt => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'searchable-select__option';
+        row.innerHTML = `<span class="searchable-select__email">${clienteLabel(opt)}</span>`;
+        row.addEventListener('click', () => selectCliente(opt));
+        optionsEl.appendChild(row);
+      });
+    }
+    renderOptions();
+
+    trigger.addEventListener('click', () => {
+      document.querySelectorAll('.multiselect.is-open').forEach(other => { if (other !== wrap) other.classList.remove('is-open'); });
+      wrap.classList.toggle('is-open');
+    });
+
+    searchInput.addEventListener('click', e => e.stopPropagation());
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+      optionsEl.querySelectorAll('.searchable-select__option').forEach(row => {
+        const match = !term || row.textContent.toLowerCase().includes(term);
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      emptyEl.hidden = visible !== 0;
+    });
+
+    return {
+      addAndSelect(opt) {
+        options.push(opt);
+        renderOptions();
+        selectCliente(opt);
+      },
+    };
+  }
+
+  const clienteSelect = createClienteSelect(document.getElementById('cliente-mount'), {
+    options: CLIENTES_FICTICIOS,
+    placeholder: 'Selecione um cliente',
+  });
+
+  // ── "Adicionar novo cliente" — no produto real isso navega para a página de
+  //    criação de cliente (fora do escopo deste protótipo). Aqui é só um stub. ──
+  document.getElementById('btn-novo-cliente').addEventListener('click', () => {
+    alert('Protótipo: aqui a pessoa seria direcionada para a página de criação de cliente (ainda não desenhada).');
+  });
+
+  // ── Chips de seleção única (Seção/Categoria) ──
+  function wireSingleSelectChips(groupEl, onChange) {
+    groupEl.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        groupEl.querySelectorAll('.chip').forEach(c => c.classList.remove('chip--filled'));
+        chip.classList.add('chip--filled');
+        if (onChange) onChange(chip.dataset.value);
+      });
+    });
+  }
+
+  // ── Seção/Categoria: múltipla seleção, com filtro em cascata quando os dois estão ativos.
+  //    Dados fictícios temporários — Natália vai enviar a árvore real de seção/categoria depois. ──
+  const CATEGORIAS_POR_SECAO = {
+    'Bebidas': ['Águas'],
+    'Sazonais': ['Festa Junina'],
+    'Hortifruti': ['Flores'],
+    'Frios e Laticínios': ['Frios Embutidos'],
+    'Pet': ['Gatos'],
+    'Refrigerados': ['Geladeira'],
+    'Mercearia': ['Grãos', 'Grãos e Farinhas'],
+    'Higiene e Beleza': ['Higiene e Beleza'],
+  };
+  const SECOES_INDUSTRIA = Object.keys(CATEGORIAS_POR_SECAO);
+  const CATEGORIAS_INDUSTRIA = Object.values(CATEGORIAS_POR_SECAO).flat();
+
+  function categoriasDasSecoes(secoes) {
+    const set = new Set();
+    secoes.forEach(secao => (CATEGORIAS_POR_SECAO[secao] || []).forEach(cat => set.add(cat)));
+    return Array.from(set);
+  }
+
+  const campoSecao = document.getElementById('campo-secao');
+  const campoCategoria = document.getElementById('campo-categoria');
+  const secaoMultiselect = createMultiselect(campoSecao.querySelector('[data-ms-mount]'), {
+    options: SECOES_INDUSTRIA,
+    placeholder: 'Selecione uma ou mais seções',
+    searchable: true,
+  });
+  const categoriaMultiselect = createMultiselect(campoCategoria.querySelector('[data-ms-mount]'), {
+    options: CATEGORIAS_INDUSTRIA,
+    placeholder: 'Selecione uma ou mais categorias',
+    searchable: true,
+  });
+
+  // Trocar a seção sempre reinicia a seleção de categorias, já que a lista
+  // de opções muda junto (filtro concatenado).
+  campoSecao.addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const modoAtual = document.querySelector('#secao-categoria-group .chip--filled')?.dataset.value;
+    if (modoAtual === 'secao-categoria') {
+      const secoesSelecionadas = Array.from(campoSecao.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      categoriaMultiselect.setOptions(categoriasDasSecoes(secoesSelecionadas));
+    }
+  });
+
+  wireSingleSelectChips(document.getElementById('secao-categoria-group'), (value) => {
+    campoSecao.hidden = !(value === 'secao' || value === 'secao-categoria');
+    campoCategoria.hidden = !(value === 'categoria' || value === 'secao-categoria');
+    if (value === 'secao-categoria') {
+      const secoesSelecionadas = Array.from(campoSecao.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      categoriaMultiselect.setOptions(categoriasDasSecoes(secoesSelecionadas));
+    } else if (value === 'categoria') {
+      categoriaMultiselect.setOptions(CATEGORIAS_INDUSTRIA);
+    }
+  });
+
+  // ── Multiselect: dropdown com checkboxes (+ busca opcional) ──
+  function createMultiselect(mountEl, { options, placeholder, searchable }) {
+    const wrap = document.createElement('div');
+    wrap.className = 'multiselect';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'form-field__box multiselect__trigger';
+    trigger.innerHTML = `
+      <span class="multiselect__value" data-ms-value>${placeholder}</span>
+      <span class="form-field__chevron" aria-hidden="true"><svg class="form-field__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M10.8803 15.7076L6.29237 11.1197C5.90254 10.7299 5.90254 10.1001 6.29237 9.71032C6.68219 9.32049 7.31191 9.32049 7.70174 9.71032L11.59 13.5886L15.4683 9.71032C15.8581 9.32049 16.4878 9.32049 16.8776 9.71032C17.2675 10.1001 17.2675 10.7299 16.8776 11.1197L12.2897 15.7076C11.9099 16.0975 11.2701 16.0975 10.8803 15.7076Z"/></svg></span>
+    `;
+
+    const panel = document.createElement('div');
+    panel.className = 'dropdown multiselect__panel';
+
+    let searchInput = null;
+    if (searchable) {
+      const searchWrap = document.createElement('div');
+      searchWrap.className = 'multiselect__search';
+      searchWrap.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Buscar..." data-ms-search />`;
+      panel.appendChild(searchWrap);
+      searchInput = searchWrap.querySelector('input');
+    }
+
+    const optionsEl = document.createElement('div');
+    optionsEl.className = 'multiselect__options';
+    panel.appendChild(optionsEl);
+
+    const emptyEl = document.createElement('p');
+    emptyEl.className = 'multiselect__empty';
+    emptyEl.textContent = 'Nenhum resultado encontrado';
+    emptyEl.hidden = true;
+    panel.appendChild(emptyEl);
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(panel);
+    mountEl.appendChild(wrap);
+
+    const valueEl = trigger.querySelector('[data-ms-value]');
+    function updateValue() {
+      const checked = Array.from(optionsEl.querySelectorAll('input:checked')).map(c => c.value);
+      if (checked.length === 0) {
+        valueEl.textContent = placeholder;
+        valueEl.classList.remove('has-value');
+      } else {
+        valueEl.textContent = checked.join(', ');
+        valueEl.classList.add('has-value');
+      }
+    }
+
+    // Reconstrói a lista de opções — usado na criação e por quem precisa trocar
+    // as opções depois (ex: categoria filtrada dinamicamente pela seção escolhida).
+    function setOptions(newOptions) {
+      optionsEl.innerHTML = '';
+      newOptions.forEach(opt => {
+        const label = document.createElement('label');
+        label.className = 'checkbox multiselect__option';
+        label.innerHTML = `
+          <input class="checkbox__input" type="checkbox" value="${opt}" />
+          <span class="checkbox__box" aria-hidden="true">
+            <svg class="checkbox__mark checkbox__mark--check" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="checkbox__content"><span class="checkbox__label">${opt}</span></span>
+        `;
+        optionsEl.appendChild(label);
+      });
+      optionsEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateValue));
+      if (searchInput) searchInput.value = '';
+      emptyEl.hidden = newOptions.length !== 0;
+      updateValue();
+    }
+    setOptions(options);
+
+    trigger.addEventListener('click', () => {
+      document.querySelectorAll('.multiselect.is-open').forEach(other => { if (other !== wrap) other.classList.remove('is-open'); });
+      wrap.classList.toggle('is-open');
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('click', e => e.stopPropagation());
+      searchInput.addEventListener('input', () => {
+        const term = searchInput.value.toLowerCase().trim();
+        let visible = 0;
+        optionsEl.querySelectorAll('.multiselect__option').forEach(opt => {
+          const match = !term || opt.textContent.toLowerCase().includes(term);
+          opt.hidden = !match;
+          if (match) visible++;
+        });
+        emptyEl.hidden = visible !== 0;
+      });
+    }
+
+    return { el: wrap, setOptions };
+  }
+
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.multiselect.is-open').forEach(wrap => {
+      if (!wrap.contains(e.target)) wrap.classList.remove('is-open');
+    });
+  });
+
+  // ── Canais: chips de múltipla escolha — cada um revela seu multiselect de tipos ──
+  const CANAL_TIPOS = {
+    alimentar: ['Atacado', 'Departamento', 'Desconhecido', 'Hipermercados', 'Mercearia', 'Padaria', 'Posto de Combustível', 'Supermercados', 'Vizinhança'],
+    farma: ['Farmácia', 'Loja de cosméticos'],
+    especializadas: ['Produtos naturais, suplementos e vitaminas', 'Home center', 'Eletroeletrônicos', 'Livraria', 'Petshop', 'Papelaria', 'Móveis', 'Açougue', 'Vestiário', 'Armarinho', 'Brinquedos', 'Autopeças'],
+  };
+  const CANAL_PLACEHOLDER = {
+    alimentar: 'Selecione um ou mais canais alimentares',
+    farma: 'Selecione um ou mais canais farma',
+    especializadas: 'Selecione uma ou mais lojas especializadas',
+  };
+  document.querySelectorAll('[data-canal-campo]').forEach(campo => {
+    const tipo = campo.dataset.canalCampo;
+    createMultiselect(campo.querySelector('[data-ms-mount]'), {
+      options: CANAL_TIPOS[tipo],
+      placeholder: CANAL_PLACEHOLDER[tipo],
+      searchable: false,
+    });
+  });
+  document.getElementById('canais-group').querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('chip--filled');
+      const campo = document.querySelector(`[data-canal-campo="${chip.dataset.value}"]`);
+      if (campo) campo.hidden = !chip.classList.contains('chip--filled');
+    });
+  });
+
+  // ── Cobertura: Nacional não pode coexistir com Região/UF/Cidade; esses três podem coexistir.
+  //    Cidade só é vendida no bundle Varejo — a opção é escondida em updateBundle(). ──
+  const REGIOES_BRASIL = ['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul'];
+  const UF_BRASIL = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'];
+  const CIDADES_BRASIL = ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Curitiba', 'Porto Alegre', 'Salvador', 'Fortaleza', 'Brasília', 'Florianópolis', 'Manaus', 'Recife', 'Goiânia'];
+
+  const coberturaGroup = document.getElementById('cobertura-group');
+  const campoRegiao = document.getElementById('campo-regiao');
+  const campoUf = document.getElementById('campo-uf');
+  const campoCidade = document.getElementById('campo-cidade');
+  createMultiselect(campoRegiao.querySelector('[data-ms-mount]'), {
+    options: REGIOES_BRASIL,
+    placeholder: 'Selecione uma ou mais regiões do Brasil',
+    searchable: true,
+  });
+  createMultiselect(campoUf.querySelector('[data-ms-mount]'), {
+    options: UF_BRASIL,
+    placeholder: 'Selecione um ou mais estados (UF)',
+    searchable: true,
+  });
+  createMultiselect(campoCidade.querySelector('[data-ms-mount]'), {
+    options: CIDADES_BRASIL,
+    placeholder: 'Selecione uma ou mais cidades',
+    searchable: true,
+  });
+  coberturaGroup.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const value = chip.dataset.value;
+      if (value === 'nacional') {
+        coberturaGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('chip--filled'));
+        chip.classList.add('chip--filled');
+        campoRegiao.hidden = true;
+        campoUf.hidden = true;
+        campoCidade.hidden = true;
+      } else {
+        coberturaGroup.querySelector('[data-value="nacional"]').classList.remove('chip--filled');
+        chip.classList.toggle('chip--filled');
+        campoRegiao.hidden = !coberturaGroup.querySelector('[data-value="regiao"]').classList.contains('chip--filled');
+        campoUf.hidden = !coberturaGroup.querySelector('[data-value="uf"]').classList.contains('chip--filled');
+        campoCidade.hidden = !coberturaGroup.querySelector('[data-value="cidade"]').classList.contains('chip--filled');
+      }
+    });
+  });
+
+  // ── Plano: dropdown de seleção ──
+  const planoSelect = document.getElementById('plano-select');
+  const planoInput = document.getElementById('plano-input');
+  planoInput.addEventListener('click', () => planoSelect.classList.toggle('is-open'));
+  const btnPlanoResumo = document.getElementById('btn-plano-resumo');
+  const secaoAdicionais = document.getElementById('secao-adicionais');
+  planoSelect.querySelectorAll('.dropdown__item').forEach(item => {
+    item.addEventListener('click', () => {
+      planoInput.value = item.dataset.plano;
+      planoSelect.classList.remove('is-open');
+      btnPlanoResumo.hidden = false;
+      secaoAdicionais.hidden = false;
+      updateModalSubtitle();
+      updatePacotesSummaries();
+      updatePlanoResumo();
+      updateBundleMisto();
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!planoSelect.contains(e.target)) planoSelect.classList.remove('is-open');
+  });
+
+  // ── PDV: sub-switches (Comodato / API) só ficam disponíveis com o switch principal ligado ──
+  document.querySelectorAll('[data-pdv-toggle]').forEach(toggle => {
+    const row = toggle.closest('.adicional-row');
+    const sub = row.querySelector('[data-pdv-sub]');
+    toggle.addEventListener('change', () => {
+      sub.hidden = !toggle.checked;
+      if (!toggle.checked) {
+        sub.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+      }
+    });
+  });
+
+  // ── Pacotes adicionais on demand: switch revela stepper; cada pacote soma 100 solicitações
+  //    ao total de solicitações sob demanda do plano contratado (Essential: 0 · Pro: 500 · Enterprise: 1000). ──
+  const SOLICITACOES_BASE = {
+    varejo: { Essential: 0, Pro: 500, Enterprise: 1000, Trial: 1000 },
+    industria: { Essential: 0, Pro: 500, Enterprise: 1000, Trial: 1000 },
+  };
+
+  function pacotesBase() {
+    const bundle = currentBundle();
+    if (!bundle) return 0;
+    return SOLICITACOES_BASE[bundle][planoInput.value] || 0;
+  }
+
+  function updatePacotesSummary(row) {
+    const toggle = row.querySelector('[data-pacotes-toggle]');
+    const stepper = row.querySelector('[data-pacotes-stepper]');
+    const countEl = row.querySelector('[data-pacotes-count]');
+    const summaryEl = row.querySelector('[data-pacotes-summary]');
+    const lockMsg = row.querySelector('[data-pacotes-lock-msg]');
+    const base = pacotesBase();
+
+    // Pacotes adicionais só fazem sentido se o plano já inclui solicitações sob
+    // demanda semanais — sem isso, não tem "base" pra somar pacote extra.
+    const disponivel = base > 0;
+    toggle.disabled = !disponivel;
+    if (lockMsg) lockMsg.hidden = disponivel;
+    if (!disponivel && toggle.checked) {
+      toggle.checked = false;
+      stepper.hidden = true;
+      countEl.textContent = '0';
+    }
+
+    const count = parseInt(countEl.textContent, 10) || 0;
+    const total = base + count * 100;
+    summaryEl.textContent = `${base} do plano + ${count * 100} extras = ${total} solicitações/semana`;
+  }
+
+  function updatePacotesSummaries() {
+    document.querySelectorAll('.adicional-row--pacotes').forEach(updatePacotesSummary);
+  }
+
+  document.querySelectorAll('[data-pacotes-toggle]').forEach(toggle => {
+    const row = toggle.closest('.adicional-row');
+    const stepper = row.querySelector('[data-pacotes-stepper]');
+    const countEl = row.querySelector('[data-pacotes-count]');
+    toggle.addEventListener('change', () => {
+      stepper.hidden = !toggle.checked;
+      if (!toggle.checked) { countEl.textContent = '0'; }
+      updatePacotesSummary(row);
+    });
+    row.querySelectorAll('[data-pacotes-step]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const delta = parseInt(btn.dataset.pacotesStep, 10);
+        const next = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + delta);
+        countEl.textContent = String(next);
+        updatePacotesSummary(row);
+      });
+    });
+    updatePacotesSummary(row);
+  });
+
+  // ── Modal "Ver detalhamento do plano" — somente leitura, a partir da matriz Bundle × Plano ──
+  const PLAN_MATRIX = {
+    varejo: [
+      { nucleo: 'Preço e Concorrência', itens: [
+        { label: 'Painel Geral', Essential: true, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Módulo de Competitividade', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Módulo Omnichannel', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Análise de Cobertura', Essential: true, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Solicitações sob demanda (semanais)', Essential: false, Pro: '500', Enterprise: '1000', Trial: '1000' },
+      ]},
+      { nucleo: 'Inteligência', itens: [
+        { label: 'Módulo de Lojas Concorrentes', Essential: false, Pro: true, Enterprise: true, Trial: false, ia: true },
+        { label: 'Simulador de Demanda', Essential: false, Pro: false, Enterprise: true, Trial: true, ia: true },
+        { label: 'Sensibilidade InfoPrice', Essential: false, Pro: false, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Precificação Estratégica', itens: [
+        { label: 'Gerenciador de Preços', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Regras e limites', Essential: false, Pro: 'Ilimitadas', Enterprise: 'Ilimitadas', Trial: false },
+        { label: 'Preço Psicológico', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Tabela de Preço', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Preço Regular', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Preço Atacado', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Margem objetiva', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Extração de preços', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Preço Oferta (farma)', Essential: false, Pro: true, Enterprise: true, Trial: false },
+        { label: 'Preço Oferta (alimentar)', Essential: false, Pro: 'Visualização', Enterprise: 'Visualização', Trial: false },
+      ]},
+      { nucleo: 'Campanhas', itens: [
+        { label: 'Módulo de campanhas', Essential: false, Pro: true, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Negociação', itens: [
+        { label: 'Módulo de Negociação', Essential: true, Pro: true, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Análises e Relatórios', itens: [
+        { label: 'Módulo de Relatórios', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'IPA Analytics', Essential: false, Pro: false, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Integração e Utilização', itens: [
+        { label: 'Integração FTP (InfoPanel)', Essential: false, Pro: false, Enterprise: true, Trial: false },
+        { label: 'Quantidade de Usuários', Essential: 'Ilimitado', Pro: 'Ilimitado', Enterprise: 'Ilimitado', Trial: 'Ilimitado' },
+      ]},
+    ],
+    industria: [
+      { nucleo: 'Preço e Concorrência', itens: [
+        { label: 'Painel Geral', Essential: true, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Módulo de Competitividade', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Módulo Omnichannel', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Análise de Cobertura', Essential: true, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Módulo de Aderência de Preços', Essential: false, Pro: false, Enterprise: true, Trial: true },
+        { label: 'Solicitações sob demanda (semanais)', Essential: false, Pro: '500', Enterprise: '1000', Trial: '1000' },
+      ]},
+      { nucleo: 'Inteligência', itens: [
+        { label: 'Elasticidade Cruzada', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Aderência de Competitividade', Essential: false, Pro: true, Enterprise: true, Trial: true },
+        { label: 'Visão Geral de Elasticidade', Essential: false, Pro: true, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Análises e Relatórios', itens: [
+        { label: 'Módulo de Relatórios', Essential: false, Pro: true, Enterprise: true, Trial: true },
+      ]},
+      { nucleo: 'Integração e Utilização', itens: [
+        { label: 'Integração FTP (InfoPanel)', Essential: false, Pro: false, Enterprise: true, Trial: false },
+        { label: 'Quantidade de Usuários', Essential: 'Ilimitado', Pro: 'Ilimitado', Enterprise: 'Ilimitado', Trial: 'Ilimitado' },
+      ]},
+    ],
+  };
+
+  // ── Bundle misto (Varejo Pro): recursos exclusivos da Indústria/Enterprise
+  //    disponíveis como adicionais individuais, agrupados visualmente. ──
+  function planIncluiItem(bundle, plano, label) {
+    const nucleos = PLAN_MATRIX[bundle] || [];
+    for (const nucleo of nucleos) {
+      const item = nucleo.itens.find(i => i.label === label);
+      if (item) return item[plano] !== false;
+    }
+    return false;
+  }
+
+  function updateBundleMisto() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    const showPro = bundle === 'varejo' && plano === 'Pro';
+    const showIndustria = bundle === 'varejo' && (plano === 'Pro' || plano === 'Enterprise' || plano === 'Trial');
+
+    const applyGroup = (selector, show) => {
+      document.querySelectorAll(selector).forEach(g => {
+        g.hidden = !show;
+        if (!show) {
+          g.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+          g.querySelectorAll('[data-elasticidade-skus]').forEach(s => { s.hidden = true; });
+        }
+      });
+    };
+    // "Recursos do plano Enterprise" só faz sentido no Pro — no Enterprise esses
+    // itens já vêm inclusos nativamente no plano, não precisam ser oferecidos de novo.
+    applyGroup('#adicionais-varejo [data-adicionais-group="bundle-misto-pro"]', showPro);
+    // Elasticidade Cruzada / Outros recursos da Indústria: um cliente Varejo Pro OU
+    // Enterprise (ou em Trial) também pode atuar na Indústria — bundle misto não é
+    // exclusivo de um plano.
+    applyGroup('#adicionais-varejo [data-adicionais-group="bundle-misto-industria"]', showIndustria);
+
+    updateAderenciaAlertaGate();
+    updateCompetitividadeAlertaGate();
+    updateSegmentosPersonalizadosGate();
+  }
+
+  // Alerta de Aderência de Competitividade: o switch fica sempre visível, mas só
+  // habilita quando o módulo correspondente está ativo — nativo na Indústria a
+  // partir do Pro, ou ligado como adicional no bundle misto do Varejo.
+  function updateAderenciaAlertaGate() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    document.querySelectorAll('[data-alerta="aderencia-competitividade"]').forEach(alertaInput => {
+      const row = alertaInput.closest('.adicional-row');
+      const lockMsg = row ? row.querySelector('[data-alerta-lock-msg]') : null;
+      const isNativeList = !!alertaInput.closest('#adicionais-industria');
+      let ativo;
+      if (isNativeList) {
+        ativo = bundle === 'industria' && planIncluiItem('industria', plano, 'Aderência de Competitividade');
+      } else {
+        const moduloToggle = document.querySelector('[data-aderencia-mod-toggle]');
+        ativo = !!(moduloToggle && moduloToggle.checked);
+      }
+      alertaInput.disabled = !ativo;
+      if (lockMsg) lockMsg.hidden = ativo;
+      if (!ativo && alertaInput.checked) alertaInput.checked = false;
+    });
+  }
+
+  // Alerta de Módulo de Competitividade: nativo dos dois bundles a partir do Pro —
+  // sempre visível, habilita conforme o módulo estiver incluso no plano atual.
+  function updateCompetitividadeAlertaGate() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    document.querySelectorAll('[data-alerta="modulo-competitividade"]').forEach(alertaInput => {
+      const row = alertaInput.closest('.adicional-row');
+      const lockMsg = row ? row.querySelector('[data-alerta-lock-msg]') : null;
+      const rowBundle = alertaInput.closest('#adicionais-varejo') ? 'varejo' : 'industria';
+      const ativo = bundle === rowBundle && planIncluiItem(rowBundle, plano, 'Módulo de Competitividade');
+      alertaInput.disabled = !ativo;
+      if (lockMsg) lockMsg.hidden = ativo;
+      if (!ativo && alertaInput.checked) alertaInput.checked = false;
+    });
+  }
+
+  // Segmentos Personalizados: adicional nativo dos dois bundles, sempre visível,
+  // habilitado nos planos Pro, Enterprise e Trial (não disponível no Essential).
+  function updateSegmentosPersonalizadosGate() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    document.querySelectorAll('[data-adicional="segmentos-personalizados"]').forEach(input => {
+      const row = input.closest('.adicional-row');
+      const lockMsg = row ? row.querySelector('[data-segpers-lock-msg]') : null;
+      const rowBundle = input.closest('#adicionais-varejo') ? 'varejo' : 'industria';
+      const ativo = bundle === rowBundle && (plano === 'Pro' || plano === 'Enterprise' || plano === 'Trial');
+      input.disabled = !ativo;
+      if (lockMsg) lockMsg.hidden = ativo;
+      if (!ativo && input.checked) input.checked = false;
+    });
+  }
+
+  document.querySelectorAll('[data-elasticidade-toggle]').forEach(toggle => {
+    const row = toggle.closest('.adicional-row');
+    const skus = row.querySelector('[data-elasticidade-skus]');
+    toggle.addEventListener('change', () => {
+      skus.hidden = !toggle.checked;
+      if (!toggle.checked) skus.querySelector('input').value = '';
+    });
+  });
+
+  document.querySelectorAll('[data-aderencia-mod-toggle]').forEach(toggle => {
+    toggle.addEventListener('change', updateAderenciaAlertaGate);
+  });
+
+  const modalOverlay = document.getElementById('modal-detalhamento');
+  const modalSubtitle = document.getElementById('modal-detalhamento-subtitle');
+  const modalBody = document.getElementById('modal-detalhamento-body');
+  const BUNDLE_LABEL = { varejo: 'Varejo', industria: 'Indústria' };
+
+  function updateModalSubtitle() {
+    const bundle = currentBundle();
+    const bundleLabel = bundle ? BUNDLE_LABEL[bundle] : 'não selecionado';
+    modalSubtitle.textContent = `Bundle ${bundleLabel} · Plano ${planoInput.value || 'não selecionado'}`;
+  }
+
+  // Lista achatada de itens inclusos (todos os núcleos), na ordem da matriz.
+  function flattenPlanItems(bundle, plano) {
+    const nucleos = PLAN_MATRIX[bundle] || [];
+    const flat = [];
+    nucleos.forEach(nucleo => {
+      nucleo.itens.forEach(item => {
+        if (item[plano] !== false) flat.push(item);
+      });
+    });
+    return flat;
+  }
+
+  function renderModalBody() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    modalBody.innerHTML = '';
+
+    if (plano === 'Trial') {
+      const aviso = document.createElement('p');
+      aviso.className = 'modal__intro';
+      aviso.textContent = 'Período de teste: exportações e extrações de dados ficam limitadas a até 10 linhas.';
+      modalBody.appendChild(aviso);
+    }
+
+    const nucleos = PLAN_MATRIX[bundle] || [];
+    let hasAny = false;
+    nucleos.forEach(nucleo => {
+      const linhas = nucleo.itens.filter(item => item[plano] !== false);
+      if (linhas.length === 0) return;
+      hasAny = true;
+      const section = document.createElement('div');
+      section.className = 'modal__nucleo';
+      const title = document.createElement('p');
+      title.className = 'modal__nucleo-title';
+      title.textContent = nucleo.nucleo;
+      section.appendChild(title);
+      linhas.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'modal__row';
+        const value = item[plano];
+        const iaTag = item.ia ? '<span class="ia-badge"><svg width="12" height="12"><use href="#ia-icon"></use></svg>IA</span>' : '';
+        row.innerHTML = `<span class="modal__row-label">${item.label}${iaTag}</span><span class="modal__row-value">${value === true ? 'Incluso' : value}</span>`;
+        section.appendChild(row);
+      });
+      modalBody.appendChild(section);
+    });
+
+    if (!hasAny) {
+      const p = document.createElement('p');
+      p.className = 'modal__empty';
+      p.textContent = 'Nenhum recurso incluso neste plano.';
+      modalBody.appendChild(p);
+    }
+  }
+
+  // ── Resumo clicável na seção Plano — prévia sempre visível do que o plano inclui ──
+  const planoResumoBtn = document.getElementById('btn-plano-resumo');
+  const planoResumoTexto = document.getElementById('plano-resumo-texto');
+  const RESUMO_DESTAQUES = 3;
+
+  function updatePlanoResumo() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+
+    if (!plano) {
+      planoResumoTexto.textContent = '';
+      return;
+    }
+
+    const itens = flattenPlanItems(bundle, plano);
+    if (itens.length === 0) {
+      planoResumoTexto.textContent = 'Nenhum recurso incluso neste plano.';
+      return;
+    }
+
+    const destaques = itens.slice(0, RESUMO_DESTAQUES).map(i => i.label);
+    const resto = itens.length - destaques.length;
+    let html = `Inclui ${destaques.join(', ')}`;
+    if (resto > 0) html += ` <span class="plano-summary__mais">e mais ${resto} recurso${resto > 1 ? 's' : ''}</span>`;
+    else html += '.';
+    planoResumoTexto.innerHTML = html;
+  }
+
+  function abrirModalDetalhamento() {
+    updateModalSubtitle();
+    renderModalBody();
+    modalOverlay.classList.add('is-open');
+  }
+  planoResumoBtn.addEventListener('click', abrirModalDetalhamento);
+  document.getElementById('modal-detalhamento-close').addEventListener('click', () => {
+    modalOverlay.classList.remove('is-open');
+  });
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) modalOverlay.classList.remove('is-open');
+  });
+
+  // ── Ações da página (protótipo — sem persistência real) ──
+  document.getElementById('btn-salvar').addEventListener('click', () => {
+    alert('Protótipo: aqui o contrato seria salvo.');
+  });
+  document.getElementById('btn-cancelar').addEventListener('click', () => {
+    alert('Protótipo: aqui as alterações seriam descartadas.');
+  });
+
+  // ── Date picker (Data início / Data fim) ──
+  const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+
+  function parseDataBR(str) {
+    const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!m) return null;
+    return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10));
+  }
+  function formatDataBR(date) {
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    return `${dd}/${mm}/${date.getFullYear()}`;
+  }
+
+  function buildDatePicker(fieldEl, input) {
+    const panel = document.createElement('div');
+    panel.className = 'date-picker';
+    panel.setAttribute('role', 'group');
+    panel.setAttribute('aria-label', 'Selecionar data');
+    fieldEl.appendChild(panel);
+
+    let viewDate = parseDataBR(input.value) || new Date();
+    let selected = parseDataBR(input.value);
+
+    function render() {
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth();
+      const firstOfMonth = new Date(year, month, 1);
+      const startOffset = firstOfMonth.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+
+      let daysHtml = '';
+      for (let i = 0; i < startOffset; i++) {
+        const prevDate = new Date(year, month, 1 - (startOffset - i));
+        daysHtml += `<button class="date-picker__day date-picker__day--muted" type="button" data-iso="${prevDate.toISOString()}"><span class="date-picker__day-pill">${prevDate.getDate()}</span></button>`;
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cellDate = new Date(year, month, d);
+        const isToday = cellDate.toDateString() === today.toDateString();
+        const isSelected = selected && cellDate.toDateString() === selected.toDateString();
+        const cls = ['date-picker__day', isToday ? 'date-picker__day--today' : '', isSelected ? 'date-picker__day--selected' : ''].filter(Boolean).join(' ');
+        daysHtml += `<button class="${cls}" type="button" data-iso="${cellDate.toISOString()}"><span class="date-picker__day-pill">${d}</span></button>`;
+      }
+      const totalCells = startOffset + daysInMonth;
+      const trailing = (7 - (totalCells % 7)) % 7;
+      for (let i = 1; i <= trailing; i++) {
+        const nextDate = new Date(year, month + 1, i);
+        daysHtml += `<button class="date-picker__day date-picker__day--muted" type="button" data-iso="${nextDate.toISOString()}"><span class="date-picker__day-pill">${nextDate.getDate()}</span></button>`;
+      }
+
+      panel.innerHTML = `
+        <div class="date-picker__header">
+          <button class="date-picker__nav" type="button" data-nav="-1" aria-label="Mês anterior">‹</button>
+          <span class="date-picker__month">${MESES[month]}, ${year}</span>
+          <button class="date-picker__nav" type="button" data-nav="1" aria-label="Próximo mês">›</button>
+        </div>
+        <div class="date-picker__weekdays" aria-hidden="true">
+          ${DIAS_SEMANA.map(d => `<span class="date-picker__weekday">${d}</span>`).join('')}
+        </div>
+        <div class="date-picker__days">${daysHtml}</div>
+        <div class="date-picker__actions">
+          <span class="date-picker__actions-links">
+            <a class="btn-link btn-link--small" href="#" data-today>Hoje</a>
+          </span>
+          <button class="btn-primary btn-primary--small" type="button" data-ok><span class="btn-primary__label">Ok</span></button>
+        </div>
+      `;
+
+      panel.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + parseInt(btn.dataset.nav, 10), 1);
+          render();
+        });
+      });
+      panel.querySelectorAll('.date-picker__day').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selected = new Date(btn.dataset.iso);
+          viewDate = new Date(selected.getFullYear(), selected.getMonth(), 1);
+          input.value = formatDataBR(selected);
+          fieldEl.classList.remove('is-open');
+        });
+      });
+      panel.querySelector('[data-today]').addEventListener('click', (e) => {
+        e.preventDefault();
+        selected = new Date();
+        viewDate = new Date(selected.getFullYear(), selected.getMonth(), 1);
+        input.value = formatDataBR(selected);
+        fieldEl.classList.remove('is-open');
+      });
+      panel.querySelector('[data-ok]').addEventListener('click', () => fieldEl.classList.remove('is-open'));
+    }
+
+    render();
+    return panel;
+  }
+
+  // Data início já vem preenchida com a data de hoje (fluxo de criação); Data fim fica vazia.
+  document.getElementById('data-inicio').value = formatDataBR(new Date());
+
+  document.querySelectorAll('.date-field').forEach(fieldEl => {
+    const input = fieldEl.querySelector('[data-date-input]');
+    const trigger = fieldEl.querySelector('[data-date-trigger]');
+    buildDatePicker(fieldEl, input);
+    trigger.addEventListener('click', () => {
+      document.querySelectorAll('.date-field.is-open').forEach(other => {
+        if (other !== fieldEl) other.classList.remove('is-open');
+      });
+      fieldEl.classList.toggle('is-open');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.date-field.is-open').forEach(fieldEl => {
+      if (!fieldEl.contains(e.target)) fieldEl.classList.remove('is-open');
+    });
+  });
+
+  updateBundle();
+
+  // ── Modais genéricas: abrir/fechar ──
+  function openModal(id) { document.getElementById(id).classList.add('is-open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('is-open'); }
+  document.querySelectorAll('[data-modal-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.modalClose));
+  });
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('is-open'); });
+  });
+
+  // ── Domínios / Usuários: parser de lista colada (aceita quebra de linha, vírgula ou ponto e vírgula) ──
+  function parseList(text) {
+    return Array.from(new Set(
+      text.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean)
+    ));
+  }
+
+  function makeDeleteButton() {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'list-table__delete';
+    btn.setAttribute('aria-label', 'Remover');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" fill="currentColor"/></svg>';
+    return btn;
+  }
+
+  // Exclusão sempre passa por confirmação. Delegação de evento cobre tanto as
+  // linhas já prontas no HTML quanto as adicionadas depois via JS.
+  let rowParaExcluir = null;
+  let tbodyParaExcluir = null;
+  const TIPO_LABEL = { 'dominio-tbody': 'este domínio', 'administrador-tbody': 'este administrador', 'usuario-tbody': 'este usuário' };
+  ['dominio-tbody', 'administrador-tbody', 'usuario-tbody'].forEach(id => {
+    const tbody = document.getElementById(id);
+    tbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('.list-table__delete');
+      if (!btn) return;
+      rowParaExcluir = btn.closest('.list-table__row');
+      tbodyParaExcluir = tbody;
+      document.getElementById('modal-confirmar-exclusao-texto').textContent =
+        `Tem certeza que deseja remover ${TIPO_LABEL[id]}? Essa ação não pode ser desfeita.`;
+      openModal('modal-confirmar-exclusao');
+    });
+  });
+  document.getElementById('btn-confirmar-exclusao').addEventListener('click', () => {
+    if (rowParaExcluir) {
+      rowParaExcluir.remove();
+      const vazio = tbodyParaExcluir.querySelector('.list-table__empty');
+      if (vazio && tbodyParaExcluir.querySelectorAll('.list-table__row').length === 0) vazio.hidden = false;
+      rowParaExcluir = null;
+      tbodyParaExcluir = null;
+    }
+    closeModal('modal-confirmar-exclusao');
+  });
+
+  // ── Domínios ──
+  const dominioInput = document.getElementById('dominio-input');
+  const dominioTbody = document.getElementById('dominio-tbody');
+  const dominioVazio = document.getElementById('dominio-vazio');
+
+  function dominioJaExiste(valor) {
+    return Array.from(dominioTbody.querySelectorAll('.list-table__cell'))
+      .some(cell => cell.textContent.toLowerCase() === valor.toLowerCase());
+  }
+
+  function addDominioRow(valor) {
+    if (!valor || dominioJaExiste(valor)) return;
+    if (dominioVazio) dominioVazio.hidden = true;
+    const row = document.createElement('div');
+    row.className = 'list-table__row';
+    const cell = document.createElement('span');
+    cell.className = 'list-table__cell';
+    cell.textContent = valor;
+    row.appendChild(cell);
+    row.appendChild(makeDeleteButton());
+    dominioTbody.appendChild(row);
+  }
+
+  // O campo manual aceita só 1 domínio por vez — quem quiser colar vários usa
+  // o botão "Colar lista de domínios" (que abre uma textarea de verdade).
+  const DOMINIO_REGEX = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
+  function showErroCampo(titulo, texto) {
+    document.getElementById('modal-erro-campo-title').textContent = titulo;
+    document.getElementById('modal-erro-campo-texto').textContent = texto;
+    openModal('modal-erro-campo');
+  }
+  function tentarAdicionarDominio() {
+    const raw = dominioInput.value.trim();
+    if (!raw) return;
+    if (parseList(raw).length > 1) {
+      showErroCampo('Isso parece uma lista', 'Esse campo aceita só um domínio por vez. Pra adicionar vários de uma vez, use o botão "Colar lista de domínios".');
+      return;
+    }
+    if (raw.length > 80 || !DOMINIO_REGEX.test(raw)) {
+      showErroCampo('Domínio inválido', 'Esse valor não parece um domínio válido. Confira e tente novamente.');
+      return;
+    }
+    if (dominioJaExiste(raw)) {
+      showErroCampo('Domínio já adicionado', 'Cada domínio só pode ser adicionado uma vez.');
+      return;
+    }
+    addDominioRow(raw);
+    dominioInput.value = '';
+  }
+  document.getElementById('btn-dominio-adicionar').addEventListener('click', tentarAdicionarDominio);
+  dominioInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tentarAdicionarDominio(); }
+  });
+  document.getElementById('btn-dominio-colar').addEventListener('click', () => openModal('modal-colar-dominio'));
+  document.getElementById('btn-dominio-colar-confirmar').addEventListener('click', () => {
+    const textarea = document.getElementById('dominio-paste-textarea');
+    parseList(textarea.value).forEach(addDominioRow);
+    textarea.value = '';
+    closeModal('modal-colar-dominio');
+  });
+
+  // ── Administradores: diretório fictício da InfoPrice usado para localizar nome a partir do e-mail ──
+  const ADMINISTRADORES_FICTICIOS = [
+    { nome: 'Base Infoprice Comercial', email: 'infoprice.comercial@ext.infoprice.co' },
+    { nome: 'Victor De Oliveira Neves', email: 'victor.neves@infoprice.co' },
+    { nome: 'Amanda Gabriela Marques De Queiroz', email: 'amanda.queiroz@infoprice.co' },
+    { nome: 'Vanessa Shigekiyo', email: 'vanessa.shigekiyo@infoprice.co' },
+    { nome: 'Mariana Alves de Lacerda', email: 'mariana.lacerda@infoprice.co' },
+  ];
+
+  const administradorInput = document.getElementById('administrador-input');
+  const administradorTbody = document.getElementById('administrador-tbody');
+  const administradorVazio = document.getElementById('administrador-vazio');
+
+  function administradorJaExiste(email) {
+    return Array.from(administradorTbody.querySelectorAll('.list-table__cell--muted'))
+      .some(cell => cell.textContent.toLowerCase() === email.toLowerCase());
+  }
+
+  function addAdministradorRow(nome, email) {
+    if (administradorJaExiste(email)) return;
+    if (administradorVazio) administradorVazio.hidden = true;
+    const row = document.createElement('div');
+    row.className = 'list-table__row';
+    const cellNome = document.createElement('span');
+    cellNome.className = 'list-table__cell';
+    cellNome.textContent = nome;
+    const cellEmail = document.createElement('span');
+    cellEmail.className = 'list-table__cell list-table__cell--muted';
+    cellEmail.textContent = email;
+    row.appendChild(cellNome);
+    row.appendChild(cellEmail);
+    row.appendChild(makeDeleteButton());
+    administradorTbody.appendChild(row);
+  }
+
+  function processarAdministradores(emails) {
+    const naoEncontrados = [];
+    emails.forEach(email => {
+      const encontrado = ADMINISTRADORES_FICTICIOS.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (encontrado) addAdministradorRow(encontrado.nome, encontrado.email);
+      else naoEncontrados.push(email);
+    });
+    if (naoEncontrados.length > 0) {
+      document.getElementById('modal-administradores-nao-encontrados-subtitle').textContent =
+        `${naoEncontrados.length} de ${emails.length} administrador${emails.length > 1 ? 'es' : ''} não ${naoEncontrados.length > 1 ? 'foram encontrados' : 'foi encontrado'}.`;
+      const lista = document.getElementById('administradores-nao-encontrados-lista');
+      lista.innerHTML = '';
+      naoEncontrados.forEach(email => {
+        const item = document.createElement('div');
+        item.className = 'not-found-list__item';
+        item.textContent = email;
+        lista.appendChild(item);
+      });
+      openModal('modal-administradores-nao-encontrados');
+    }
+  }
+
+  // Mesma regra do campo de domínio: só 1 e-mail por vez aqui; lista vai pelo botão de colar.
+  function tentarAdicionarAdministrador() {
+    const raw = administradorInput.value.trim();
+    if (!raw) return;
+    if (parseList(raw).length > 1) {
+      showErroCampo('Isso parece uma lista', 'Esse campo aceita só um administrador por vez. Pra adicionar vários de uma vez, use o botão "Colar lista de administradores".');
+      return;
+    }
+    if (raw.length > 80 || !EMAIL_REGEX.test(raw)) {
+      showErroCampo('E-mail inválido', 'Esse valor não parece um e-mail válido. Confira e tente novamente.');
+      return;
+    }
+    if (administradorJaExiste(raw)) {
+      showErroCampo('Administrador já adicionado', 'Cada administrador só pode ser adicionado uma vez.');
+      return;
+    }
+    processarAdministradores([raw]);
+    administradorInput.value = '';
+  }
+  document.getElementById('btn-administrador-adicionar').addEventListener('click', tentarAdicionarAdministrador);
+  administradorInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tentarAdicionarAdministrador(); }
+  });
+  document.getElementById('btn-administrador-colar').addEventListener('click', () => openModal('modal-colar-administrador'));
+  document.getElementById('btn-administrador-colar-confirmar').addEventListener('click', () => {
+    const textarea = document.getElementById('administrador-paste-textarea');
+    const emails = parseList(textarea.value);
+    textarea.value = '';
+    closeModal('modal-colar-administrador');
+    if (emails.length > 0) processarAdministradores(emails);
+  });
+  document.getElementById('btn-ir-adicionar-administradores').addEventListener('click', () => {
+    closeModal('modal-administradores-nao-encontrados');
+    alert('Protótipo: aqui a pessoa seria direcionada para a página de criação de novos administradores (ainda não desenhada).');
+  });
+
+  // ── Usuários: diretório fictício ("nosso sistema") usado para localizar nome a partir do e-mail ──
+  const USUARIOS_CLIENTE = [
+    { nome: 'Fernanda Lima', email: 'fernanda.lima@cacaushow.com.br' },
+    { nome: 'Ricardo Alves', email: 'ricardo.alves@cacaushow.com.br' },
+    { nome: 'Juliana Prado', email: 'juliana.prado@cacaushow.com.br' },
+    { nome: 'Marcos Vinícius', email: 'marcos.vinicius@cacaushow.com.br' },
+    { nome: 'Patrícia Gomes', email: 'patricia.gomes@cacaushow.com.br' },
+    { nome: 'Bruno Tavares', email: 'bruno.tavares@cacaushow.com.br' },
+    { nome: 'Camila Ferreira', email: 'camila.ferreira@cacaushow.com.br' },
+    { nome: 'Carlos Eduardo Souza', email: 'carlos.souza@naturaldaterra.com.br' },
+  ];
+
+  const usuarioInput = document.getElementById('usuario-input');
+  const usuarioTbody = document.getElementById('usuario-tbody');
+  const usuarioVazio = document.getElementById('usuario-vazio');
+
+  function usuarioJaExiste(email) {
+    return Array.from(usuarioTbody.querySelectorAll('.list-table__cell--muted'))
+      .some(cell => cell.textContent.toLowerCase() === email.toLowerCase());
+  }
+
+  function addUsuarioRow(nome, email) {
+    if (usuarioJaExiste(email)) return;
+    if (usuarioVazio) usuarioVazio.hidden = true;
+    const row = document.createElement('div');
+    row.className = 'list-table__row';
+    const cellNome = document.createElement('span');
+    cellNome.className = 'list-table__cell';
+    cellNome.textContent = nome;
+    const cellEmail = document.createElement('span');
+    cellEmail.className = 'list-table__cell list-table__cell--muted';
+    cellEmail.textContent = email;
+    row.appendChild(cellNome);
+    row.appendChild(cellEmail);
+    row.appendChild(makeDeleteButton());
+    usuarioTbody.appendChild(row);
+  }
+
+  function processarUsuarios(emails) {
+    const naoEncontrados = [];
+    emails.forEach(email => {
+      const encontrado = USUARIOS_CLIENTE.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (encontrado) addUsuarioRow(encontrado.nome, encontrado.email);
+      else naoEncontrados.push(email);
+    });
+    if (naoEncontrados.length > 0) {
+      document.getElementById('modal-nao-encontrados-subtitle').textContent =
+        `${naoEncontrados.length} de ${emails.length} usuário${emails.length > 1 ? 's' : ''} não ${naoEncontrados.length > 1 ? 'foram encontrados' : 'foi encontrado'}.`;
+      const lista = document.getElementById('nao-encontrados-lista');
+      lista.innerHTML = '';
+      naoEncontrados.forEach(email => {
+        const item = document.createElement('div');
+        item.className = 'not-found-list__item';
+        item.textContent = email;
+        lista.appendChild(item);
+      });
+      openModal('modal-usuarios-nao-encontrados');
+    }
+  }
+
+  // Mesma regra do campo de domínio: só 1 e-mail por vez aqui; lista vai pelo botão de colar.
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function tentarAdicionarUsuario() {
+    const raw = usuarioInput.value.trim();
+    if (!raw) return;
+    if (parseList(raw).length > 1) {
+      showErroCampo('Isso parece uma lista', 'Esse campo aceita só um usuário por vez. Pra adicionar vários de uma vez, use o botão "Colar lista de usuários".');
+      return;
+    }
+    if (raw.length > 80 || !EMAIL_REGEX.test(raw)) {
+      showErroCampo('E-mail inválido', 'Esse valor não parece um e-mail válido. Confira e tente novamente.');
+      return;
+    }
+    if (usuarioJaExiste(raw)) {
+      showErroCampo('Usuário já adicionado', 'Cada usuário só pode ser adicionado uma vez.');
+      return;
+    }
+    processarUsuarios([raw]);
+    usuarioInput.value = '';
+  }
+  document.getElementById('btn-usuario-adicionar').addEventListener('click', tentarAdicionarUsuario);
+  usuarioInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tentarAdicionarUsuario(); }
+  });
+  document.getElementById('btn-usuario-colar').addEventListener('click', () => openModal('modal-colar-usuario'));
+  document.getElementById('btn-usuario-colar-confirmar').addEventListener('click', () => {
+    const textarea = document.getElementById('usuario-paste-textarea');
+    const emails = parseList(textarea.value);
+    textarea.value = '';
+    closeModal('modal-colar-usuario');
+    if (emails.length > 0) processarUsuarios(emails);
+  });
+  document.getElementById('btn-ir-adicionar-usuarios').addEventListener('click', () => {
+    closeModal('modal-usuarios-nao-encontrados');
+    alert('Protótipo: aqui a pessoa seria direcionada para a página de criação de novos usuários (ainda não desenhada).');
+  });
+</script>
+
+</body>
+</html>
