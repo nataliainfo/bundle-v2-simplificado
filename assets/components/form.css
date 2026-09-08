@@ -1,0 +1,309 @@
+/* ═══════════════════════════════════════════════════════════════
+   Form — DS 1.0 · criado via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-215887 + Figma sets `Form / Input Label`,
+   `Form / Input Caption` e `Form / Form field` (section de Assets 5355:89540).
+   Componente NOVO no DS 1.0.
+   BEM: .form-field / .form-field__<el> / modificadores
+
+   Spec numérica do Figma:
+     box: r4 · pad 8/12 · borda 1px gray-500 (#BCBCBC) · bg white ·
+       texto 400 14/20 (placeholder gray-500 · digitado gray-900)
+     sizes: large 40 (Figma Big) · medium 36 (Default — o mais usado) ·
+       small 32 · paragraph = textarea de altura fixa (não redimensionável)
+     label: 400 14/20 gray-900 · gap 4 · required * red-600 (#D7373F) ·
+       icon MdInfo 16 gray-600 · mark "(opcional)" gray-700 · 8px até o box
+     caption: 400 12/18 gray-700 · error: red-400
+     button (segmento): w35 · r interno 3 · bg gray-200 (#F4F4F4) ·
+       icon 16 ou texto · error: bg red-light-5
+     select: chevron Material 24 gray-600
+     input-number: spinner com chevrons empilhados gray-600
+     tag-form: compõe a Tag do DS (ghost medium + close)
+     states: disabled bg gray-300 texto gray-700 · focused/typing borda
+       blue-400 + glow 0 0 4 rgba(24,144,255,.5) (literal do Figma)
+     values: default · destak borda blue-400 (sem glow) · error borda
+       red-400 + warning red no box + caption red
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Wrapper ──────────────────────────────────────────────────────── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-family-base);
+}
+
+/* Label (opcional) ─────────────────────────────────────────────── */
+.form-field__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-size: var(--font-size-md); /* 14px */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg); /* 20px */
+  color: var(--color-gray-900);
+}
+.form-field__required {
+  color: var(--color-red-600);
+} /* #D7373F */
+.form-field__label-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--color-gray-600);
+}
+.form-field__label-icon .material-icons,
+.form-field__label-icon .material-icons-round {
+  font-size: 16px;
+  line-height: 1;
+}
+.form-field__mark {
+  color: var(--color-gray-700);
+} /* (opcional) */
+
+/* Box ──────────────────────────────────────────────────────────── */
+.form-field__box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 36px; /* medium (default) */
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-500);
+  border-radius: var(--radius-sm); /* 4px */
+  background: var(--color-white);
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.form-field__input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: none;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md); /* 14px */
+  line-height: var(--line-height-lg); /* 20px */
+  color: var(--color-gray-900);
+}
+.form-field__input::placeholder {
+  color: var(--color-gray-500);
+}
+
+/* Sizes ────────────────────────────────────────────────────────── */
+.form-field--large .form-field__box {
+  height: 40px;
+} /* Figma: Big */
+.form-field--small .form-field__box {
+  height: 32px;
+}
+
+/* paragraph: textarea de altura fixa (não redimensionável) */
+.form-field--paragraph .form-field__box {
+  height: auto;
+  min-height: 96px;
+  align-items: flex-start;
+}
+.form-field--paragraph .form-field__input {
+  resize: none;
+}
+
+/* Field — select ───────────────────────────────────────────────── */
+.form-field__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--color-gray-600);
+}
+.form-field__chevron .material-icons,
+.form-field__chevron .material-icons-round {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Field — button-left / button-right (segmento) ────────────────── */
+/* O box zera o padding do lado do botão para ele encostar na borda
+   (o raio 3px do botão casa com o raio interno da borda: 4px − 1px). */
+.form-field--button-right .form-field__box {
+  padding: 0 0 0 12px;
+}
+.form-field--button-left .form-field__box {
+  padding: 0 12px 0 0;
+}
+
+.form-field__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  min-width: 35px;
+  padding: 0 10px;
+  border: none;
+  background: var(--color-gray-200); /* #F4F4F4 */
+  color: var(--color-gray-600);
+  cursor: pointer;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-lg);
+  border-radius: 0 3px 3px 0; /* button-right (Figma) */
+}
+.form-field--button-left .form-field__button {
+  border-radius: 3px 0 0 3px;
+}
+.form-field__button .material-icons,
+.form-field__button .material-icons-round {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Field — input-number (spinner) ───────────────────────────────── */
+.form-field__spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.form-field__spin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-gray-600);
+  cursor: pointer;
+}
+.form-field__spin .material-icons,
+.form-field__spin .material-icons-round {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Field — prefix: rótulo fixo à esquerda do input (ex.: R$) ── v0.3.0
+   Par do suffix; vive dentro do __box, antes do __input. */
+.form-field__prefix {
+  font-size: var(--font-size-md);
+  color: var(--color-gray-600);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Field — suffix: unidade fixa à direita do input (ex.: %) ── v0.2.0
+   Lacuna confirmada no teste da tela Configurações-Outliers (limites de
+   outlier em %). Vive dentro do __box, depois do __input. */
+.form-field__suffix {
+  font-size: var(--font-size-md);
+  color: var(--color-gray-600);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Field — tag-form: compõe a Tag do DS (ghost medium + close) ──── */
+.form-field--tag-form .form-field__box {
+  height: auto;
+  min-height: 36px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 12px;
+  border-color: var(--color-blue-400); /* print: campo em destaque */
+}
+
+/* Caption (opcional) ───────────────────────────────────────────── */
+.form-field__caption {
+  margin-top: 4px;
+  font-size: var(--font-size-sm); /* 12px */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-md); /* 18px */
+  color: var(--color-gray-700);
+}
+
+/* Values ───────────────────────────────────────────────────────── */
+.form-field--destak .form-field__box {
+  border-color: var(--color-blue-400);
+}
+.form-field--destak .form-field__button {
+  background: var(--color-blue-light-5);
+  color: var(--color-blue-400);
+}
+
+.form-field--error .form-field__box {
+  border-color: var(--color-red-400);
+}
+.form-field--error .form-field__button {
+  background: var(--color-red-light-5);
+  color: var(--color-red-400);
+}
+.form-field--error .form-field__caption {
+  color: var(--color-red-400);
+}
+.form-field__error-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-red-400);
+}
+.form-field__error-icon .material-icons,
+.form-field__error-icon .material-icons-round {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* States ───────────────────────────────────────────────────────── */
+/* focused/typing: borda azul + glow (valores literais do Figma) */
+.form-field__box:focus-within,
+.form-field--focused .form-field__box {
+  border-color: var(--color-blue-400);
+  box-shadow: 0 0 4px rgba(24, 144, 255, 0.5);
+}
+.form-field--destak .form-field__box:focus-within,
+.form-field--destak.form-field--focused .form-field__box {
+  box-shadow: none;
+} /* destak não usa glow */
+
+.form-field--disabled .form-field__box {
+  background: var(--color-gray-300); /* #EAEAEA */
+  pointer-events: none;
+}
+.form-field--disabled .form-field__input,
+.form-field--disabled .form-field__input::placeholder,
+.form-field--disabled .form-field__chevron {
+  color: var(--color-gray-700);
+}
+
+/* Ícones ────────────────────────────────────────────────────────── */
+/* SVG inline do acervo icons_basics (Figma 3105:119049) — herdam a cor
+   do contexto via currentColor. O tamanho vem do wrapper (não da fonte). */
+.form-field__glyph {
+  display: block;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.form-field__label-icon .form-field__glyph {
+  width: 16px;
+  height: 16px;
+}
+.form-field__chevron .form-field__glyph {
+  width: 24px;
+  height: 24px;
+}
+.form-field__button .form-field__glyph {
+  width: 16px;
+  height: 16px;
+}
+.form-field__spin .form-field__glyph {
+  width: 14px;
+  height: 14px;
+}
+.form-field__error-icon .form-field__glyph {
+  width: 16px;
+  height: 16px;
+}

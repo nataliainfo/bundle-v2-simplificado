@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════════════
+   Dropdown — DS 1.0 · criado via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-4503 + Figma sets `dropdown`
+   (3061:20912, painel), `dropdown / menu-itens` (3061:20704) e
+   `dropdown / menu-itens-group` (3064:24393; Assets apontam 3015:18802).
+   Componente NOVO no DS 1.0.
+   BEM: .dropdown / .dropdown__<el> / .dropdown--<modificador>
+
+   Spec numérica do Figma:
+     painel: bg white · r2 · pad 12/32/24/24 · sombra tripla
+       0 3 6 @.12 / 0 6 16 @.08 / 0 9 28 @.05 · gap entre grupos 32
+     flecha (with-arrow): 12×6 branca no topo, a 16px da esquerda — SVG
+     box title: pad 6/8 · 700 12/16 UPPERCASE blue-700 (#0D66D0)
+     item: h36 · r4 · pad 8 · gap 8 · texto 400 14/20 gray-900 ·
+       ícones 16 blue-400 · tag = componente Tag do DS (small)
+       hover: bg blue-light-5 (#F5F9FE)
+       disable: texto/ícone gray-500 (#BCBCBC) · hover disable: bg gray-300
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Painel ───────────────────────────────────────────────────────── */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 12px 32px 24px 24px;
+  border-radius: 2px;                   /* valor do Figma */
+
+  background: var(--color-white);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 9px 28px rgba(0, 0, 0, 0.05);     /* sombra tripla — valores literais do Figma */
+  font-family: var(--font-family-base);
+}
+
+/* Flecha (variação with-arrow) — SVG inline apontando para cima */
+.dropdown__arrow {
+  position: absolute;
+  top: -6px;
+  left: 16px;
+  width: 12px;
+  height: 6px;
+  fill: var(--color-white);
+}
+
+/* Grupos (gap 32 entre grupos; itens dentro do grupo são colados) ── */
+.dropdown__group + .dropdown__group { margin-top: 32px; }
+
+/* Box title (opcional no grupo) ────────────────────────────────── */
+.dropdown__title {
+  box-sizing: border-box;
+  padding: 6px 8px;
+  font-size: var(--font-size-sm);       /* 12px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: 16px;                    /* valor do Figma (sem token) */
+  text-transform: uppercase;
+  color: var(--color-blue-700);         /* #0D66D0 */
+}
+
+/* Item ─────────────────────────────────────────────────────────── */
+.dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-sm);      /* 4px */
+  background: none;
+  text-align: left;
+  cursor: pointer;
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);       /* 14px */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);   /* 20px */
+  color: var(--color-gray-900);
+  transition: background 120ms ease;
+}
+
+/* Ícones do item (esq/dir) — SVG inline extraído do Figma (nó icons_basics
+   3105:119049; ex.: MdSettings/MdCheckCircleOutline/MdLock), 16px, currentColor
+   herda o blue-400. Aceita também glifo de fonte (fallback do consumidor). */
+.dropdown__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-blue-400);
+}
+.dropdown__icon .material-icons,
+.dropdown__icon .material-icons-round { font-size: 16px; line-height: 1; }
+.dropdown__icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* O badge do item é o componente Tag do DS (small) (.badge) */
+
+/* Estados ──────────────────────────────────────────────────────── */
+.dropdown__item:hover,
+.dropdown__item.is-hover { background: var(--color-blue-light-5); }
+
+.dropdown__item:disabled,
+.dropdown__item.is-disabled {
+  color: var(--color-gray-500);
+  cursor: not-allowed;
+}
+.dropdown__item:disabled .dropdown__icon,
+.dropdown__item.is-disabled .dropdown__icon { color: var(--color-gray-500); }
+.dropdown__item:disabled:hover,
+.dropdown__item.is-disabled.is-hover { background: var(--color-gray-300); }
+
+/* hook do glifo SVG (dimensionamento vem do seletor descendente do ícone) */
+.dropdown__glyph { display: block; }

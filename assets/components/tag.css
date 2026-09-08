@@ -1,0 +1,106 @@
+/* ═══════════════════════════════════════════════════════════════
+   Tag — DS 1.0 · criada via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-4443 + Figma set `tag` (Assets 3015:18800).
+   Componente NOVO no DS 1.0.
+   BEM: .tag / .tag__<el> / .tag--<modificador>
+
+   Spec numérica do Figma:
+     large:  h=32 · pad 0 16 · gap 6 · ícone 16 · texto 700 14/20 UPPER
+     medium: h=26 · pad 0 14 · gap 4 · ícone 14 · texto 700 12/18 UPPER
+     small:  h=16 · pad 0 8  · gap 4 · ícone 12 · texto 700 10/12 UPPER (default — mais usado)
+     xsmall: h=14 · pad 0 6  · gap 4 · ícone 10 · texto 700 10/12 UPPER
+     radius pill · themes filled/ghost · colors blue/gray/green/orange/red (-400)
+     Sem ícone sozinho (aí é Badge). Ícones: Material Icons (glifo close no Figma).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — filled + small + blue ───────────────────────────── */
+.tag {
+  --tag-color: var(--color-blue-400);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 16px;                        /* small (default) — altura fixa = Figma */
+  padding: 0 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;       /* reserva p/ o ghost não pular */
+
+  background: var(--tag-color);
+  color: var(--color-white);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);       /* 10px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-xs);   /* 12px */
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Theme — ghost ────────────────────────────────────────────────── */
+.tag--ghost {
+  background: var(--color-white);
+  color: var(--tag-color);
+  border-color: var(--tag-color);
+}
+
+/* Sizes (small é o default do bloco) ───────────────────────────── */
+.tag--large {
+  height: 32px;
+  padding: 0 16px;
+  gap: 6px;
+  font-size: var(--font-size-md);      /* 14px */
+  line-height: var(--line-height-lg);  /* 20px */
+}
+.tag--medium {
+  height: 26px;
+  padding: 0 14px;
+  font-size: var(--font-size-sm);      /* 12px */
+  line-height: var(--line-height-md);  /* 18px */
+}
+.tag--xsmall {
+  height: 14px;
+  padding: 0 6px;
+}
+
+/* Colors (sobrescrevem --tag-color) ────────────────────────────── */
+.tag--gray   { --tag-color: var(--color-gray-400); }
+.tag--green  { --tag-color: var(--color-green-400); }
+.tag--orange { --tag-color: var(--color-orange-400); }
+.tag--red    { --tag-color: var(--color-red-400); }
+
+/* Elementos ────────────────────────────────────────────────────── */
+/* Ícone SEMPRE Material Icons; posição esquerda/direita = ordem no markup.
+   NUNCA usar a tag só com ícone — para isso existe o Badge. */
+.tag__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;                          /* small */
+  height: 12px;
+  flex-shrink: 0;
+}
+.tag__icon .material-icons,
+.tag__icon .material-icons-round { font-size: 12px; line-height: 1; }
+/* SVG inline (ex.: MdInfo — glyph do Figma, mais legível que o info da
+   fonte Round em tamanhos pequenos) preenche a caixa do ícone */
+.tag__icon > svg { width: 100%; height: 100%; display: block; }
+.tag--large  .tag__icon,
+.tag--large  .tag__icon .material-icons,
+.tag--large  .tag__icon .material-icons-round { width: 16px; height: 16px; font-size: 16px; }
+.tag--medium .tag__icon,
+.tag--medium .tag__icon .material-icons,
+.tag--medium .tag__icon .material-icons-round { width: 14px; height: 14px; font-size: 14px; }
+.tag--xsmall .tag__icon,
+.tag--xsmall .tag__icon .material-icons,
+.tag--xsmall .tag__icon .material-icons-round { width: 10px; height: 10px; font-size: 10px; }
+
+.tag__label {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-base);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: uppercase;
+}

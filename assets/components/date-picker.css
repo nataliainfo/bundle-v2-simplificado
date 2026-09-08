@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════════════
+   DatePicker — DS 1.0 · recriado via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-204141 + Figma sets `DatePicker`
+   (5200:80765), `Date-Range-Picker` e `Range Dates` (via Assets 4604:134852).
+   BEM: .date-picker / .date-picker__<el> / .date-picker--<mod>
+        .date-range-picker / .date-range-picker__<el>
+
+   Spec numérica do Figma:
+     painel: fundo branco · radius 6 (exceção documentada, entre sm=4 e md=8) ·
+       padding 16 · sombra 0,4 blur4 12% + 0,0 blur10 6%
+     header: setas MdKeyboardArrowLeft/Right 20px gray-600 · mês 400 12/18
+     dias da semana (Dom..Sab): 400 12/18 gray-700 · células 30×20 · gap 2
+     dia: célula 30×30 r4 · texto 400 14/20 gray-800
+       selecionado: fundo blue-400, texto branco
+       hoje/hover: borda 1px blue-400
+       in-range: banda contínua clara (Figma: blue-400 @10% ≈ blue-light-15,
+         decisão de token herdada do componente anterior)
+     rodapé de ações: Link Buttons (btn-link) + Primary Button small
+     campo Range Dates: 42px alto · texto 400 14/20 (texto SEMPRE gray-800; não há estado azul)
+   Visual-only: NÃO calcula calendário/rounds — quem consome monta os dias.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Painel ───────────────────────────────────────────────────────── */
+.date-picker {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--color-white);
+  border-radius: 6px;                  /* Figma — exceção entre --radius-sm e -md */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.12), 0 0 10px rgba(0, 0, 0, 0.06);
+  font-family: var(--font-family-base);
+}
+
+/* Header: seta ◄ · mês/ano · seta ► ──────────────────────────── */
+.date-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.date-picker__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-gray-600);
+  cursor: pointer;
+}
+.date-picker__nav .material-icons,
+.date-picker__nav .material-icons-round { font-size: 20px; line-height: 1; }
+.date-picker__nav:hover { color: var(--color-gray-800); }
+.date-picker__nav:focus-visible { outline: 2px solid var(--color-blue-400); outline-offset: 2px; }
+.date-picker__month {
+  font-size: var(--font-size-sm);      /* 12px */
+  line-height: var(--line-height-md);  /* 18px */
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-600);
+}
+
+/* Dias da semana ───────────────────────────────────────────────── */
+.date-picker__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 30px);
+  gap: 2px;
+}
+.date-picker__weekday {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  font-size: var(--font-size-sm);      /* 12px */
+  line-height: var(--line-height-md);  /* 18px */
+  color: var(--color-gray-700);
+}
+
+/* Grid de dias ─────────────────────────────────────────────────── */
+.date-picker__days {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+  /* sem gap: a banda do in-range precisa ser contínua (célula cobre 32 = 30+2) */
+}
+.date-picker__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+/* Pill interna — área que ganha hover/selecionado (30×30 r4 do Figma) */
+.date-picker__day-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-md);      /* 14px */
+  line-height: var(--line-height-lg);  /* 20px */
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-800);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.date-picker__day--muted .date-picker__day-pill { color: var(--color-gray-500); } /* dias de outro mês */
+
+.date-picker__day:hover .date-picker__day-pill,
+.date-picker__day.is-hover .date-picker__day-pill { border-color: var(--color-blue-400); }
+
+.date-picker__day--today .date-picker__day-pill { border-color: var(--color-blue-400); }
+
+.date-picker__day--selected .date-picker__day-pill {
+  background: var(--color-blue-400);
+  border-color: var(--color-blue-400);
+  color: var(--color-white);
+}
+
+/* In-range — banda contínua entre os endpoints.
+   Geometria do Figma (get_design_context, 16/07): banda de 24,465px de
+   altura CENTRADA na linha de 32 → 4px de respiro em cima e embaixo
+   (clip em content-box). Horizontal segue contínuo. */
+.date-picker__day--in-range,
+.date-picker__day--range-start,
+.date-picker__day--range-end {
+  padding: 4px 0;
+  background-clip: content-box;
+}
+.date-picker__day--in-range { background-color: var(--color-blue-light-15); }
+.date-picker__day--range-start { background-image: linear-gradient(to right, transparent 50%, var(--color-blue-light-15) 50%); }
+.date-picker__day--range-end { background-image: linear-gradient(to left, transparent 50%, var(--color-blue-light-15) 50%); }
+
+.date-picker__day:disabled { cursor: not-allowed; }
+.date-picker__day:disabled .date-picker__day-pill { color: var(--color-gray-400); }
+.date-picker__day:focus-visible { outline: 2px solid var(--color-blue-400); outline-offset: -2px; border-radius: var(--radius-sm); }
+
+/* Slots opcionais (variações) ──────────────────────────────────── */
+.date-picker__hour {
+  font-size: var(--font-size-sm);      /* 12px */
+  line-height: var(--line-height-md);  /* 18px */
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+
+/* Rodapé de ações: composição com Link Button + Primary Button small */
+.date-picker__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-gray-400);
+}
+.date-picker__actions-links { display: inline-flex; align-items: center; gap: 10px; }
+
+.date-picker__actions-links .btn-link + .btn-link,
+.date-range-picker__actions-links .btn-link + .btn-link {
+  border-left: 1px solid var(--color-gray-300);
+  padding-left: 10px;
+}

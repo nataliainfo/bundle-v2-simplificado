@@ -1,0 +1,145 @@
+/* ═══════════════════════════════════════════════════════════════
+   Primary Button — DS 1.0 · recriado via skill
+   component-creator em 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-4123 + Figma qXRoOz0cCzAX4WgOz7fAmJ
+   component set `button / primary` (nó 2911:18077 — o link de Assets da
+   página do ClickUp aponta para 3052:18954, que é o button/link; ver relatório).
+   BEM: .btn-primary / .btn-primary__<el> / .btn-primary--<modificador>
+
+   Spec numérica extraída do Figma:
+     large:  h=42 · pad-h 16 · gap 12 · texto 700 16/22 · ícone 22
+     medium: h=36 · pad-h 12 · gap 10 · texto 700 14/20 · ícone 20  (default)
+     small:  h=30 · pad-h 10 · gap  8 · texto 700 12/18 · ícone 18
+     xsmall: h=24 · pad-h  8 · gap  6 · texto 700 10/16 · ícone 12
+     radius 4 (--radius-sm) em todos os sizes
+     filled: bg #378EF0 (blue-400) · hover #1473E6 (blue-600) ·
+             active #0D66D0 (blue-700) · texto branco
+     ghost:  fundo transparente · borda 1px + texto na cor (mesma escala)
+     disable: opacity 0.4 (ambos os themes)
+     texto SEMPRE UPPERCASE · Open Sans Bold
+     ícone: Material Icons ROUND (os glifos Md* do Figma usam a
+            variante rounded — regra do DS desde 15/07/2026)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — filled + medium + default ───────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-sizing: border-box;
+  height: 36px;                         /* medium — altura fixa = Figma (border-box absorve a borda) */
+  padding: 0 12px;                      /* só horizontal; a altura controla o vertical */
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;        /* reserva a borda p/ não pular no ghost */
+
+  background: var(--color-blue-400);
+  color: var(--color-white);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-btn-md);        /* 14px */
+  font-weight: var(--font-weight-btn-md-bold); /* 700 */
+  line-height: var(--line-height-btn-md);    /* 20px */
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+/* Estados — filled (as classes .is-hover/.is-active existem SÓ para
+   documentação/QA visual; produção usa as pseudo-classes) ────────── */
+.btn-primary:hover,
+.btn-primary.is-hover { background: var(--color-blue-600); }
+
+.btn-primary:active,
+.btn-primary.is-active { background: var(--color-blue-700); }
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Theme — ghost ────────────────────────────────────────────────── */
+.btn-primary--ghost {
+  background: transparent;
+  color: var(--color-blue-400);
+  border-color: var(--color-blue-400);
+}
+.btn-primary--ghost:hover,
+.btn-primary--ghost.is-hover {
+  background: transparent;
+  color: var(--color-blue-600);
+  border-color: var(--color-blue-600);
+}
+.btn-primary--ghost:active,
+.btn-primary--ghost.is-active {
+  background: transparent;
+  color: var(--color-blue-700);
+  border-color: var(--color-blue-700);
+}
+
+/* Sizes (medium é o default do bloco) ──────────────────────────── */
+.btn-primary--large {
+  height: 42px;
+  padding: 0 16px;
+  gap: 12px;
+  font-size: var(--font-size-btn-lg);        /* 16px */
+  line-height: var(--line-height-btn-lg);    /* 22px */
+}
+.btn-primary--small {
+  height: 30px;
+  padding: 0 10px;
+  gap: 8px;
+  font-size: var(--font-size-btn-sm);        /* 12px */
+  line-height: var(--line-height-btn-sm);    /* 18px */
+}
+.btn-primary--xsmall {
+  height: 24px;
+  padding: 0 8px;
+  gap: 6px;
+  font-size: var(--font-size-btn-xs);        /* 10px */
+  line-height: var(--line-height-btn-xs);    /* 16px */
+}
+
+/* Elementos ────────────────────────────────────────────────────── */
+/* REGRA DO COMPONENTE: o ícone do Primary Button usa Material Icons
+   ROUND (glifos Md* do Figma, ex. MdFileDownload, na variante rounded).
+   Posição esquerda/direita = ordem dos elementos no markup
+   (icon-left: ícone antes do label · icon-right: depois).
+   NUNCA usar o botão só com ícone — o texto é obrigatório (ClickUp). */
+.btn-primary__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;                          /* medium */
+  height: 20px;
+  flex-shrink: 0;
+}
+.btn-primary__icon .material-icons,
+.btn-primary__icon .material-icons-round { font-size: 20px; line-height: 1; }
+.btn-primary__icon svg,
+.btn-primary__icon img { width: 100%; height: 100%; display: block; }
+
+.btn-primary--large  .btn-primary__icon,
+.btn-primary--large  .btn-primary__icon .material-icons,
+.btn-primary--large  .btn-primary__icon .material-icons-round { width: 22px; height: 22px; font-size: 22px; }
+.btn-primary--small  .btn-primary__icon,
+.btn-primary--small  .btn-primary__icon .material-icons,
+.btn-primary--small  .btn-primary__icon .material-icons-round { width: 18px; height: 18px; font-size: 18px; }
+.btn-primary--xsmall .btn-primary__icon,
+.btn-primary--xsmall .btn-primary__icon .material-icons,
+.btn-primary--xsmall .btn-primary__icon .material-icons-round { width: 12px; height: 12px; font-size: 12px; }
+
+/* Label herda a tipografia do bloco; reforço contra resets. */
+.btn-primary__label {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-base);
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  text-transform: uppercase;
+}

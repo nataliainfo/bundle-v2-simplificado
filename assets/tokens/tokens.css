@@ -1,0 +1,365 @@
+/* ============================================================
+   DESIGN SYSTEM — InfoPrice
+   Fonte: Figma › Design System
+   https://www.figma.com/design/qXRoOz0cCzAX4WgOz7fAmJ/Design-System
+
+   Gerado a partir de 196 styles (125 cores, 66 tipografia, 5 efeitos).
+
+   Normalizações aplicadas:
+   - Duplicatas removidas (Blue-400 ×4, Gray-900 ×3, etc.)
+   - "Grey-50" → "gray-50" (grafia normalizada)
+   - "Light/red-20" → "red-light-20" (case inconsistente removido)
+   - "light-blue10" excluído (valor #e2eefd diverge de Light/Blue-10 #ebf4fe)
+   - Tokens legados excluídos: @B200, @B600, Gray/gray-X (Ant Design),
+     Neutral/13, Daybreak Blue/blue-6, InfoPrice Marca/Gradiente Azul
+   ============================================================ */
+
+:root {
+
+  /* ────────────────────────────────────────────────────────────
+     MARCA / BRAND
+     ────────────────────────────────────────────────────────── */
+
+  --color-brand-primary:   #0e9ce3;
+  --color-brand-tertiary:  #cce9fa;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — BRANCO E PRETO
+     ────────────────────────────────────────────────────────── */
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — CINZA
+     ────────────────────────────────────────────────────────── */
+
+  --color-gray-25:  #fcfcfc;
+  --color-gray-50:  #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #f4f4f4;
+  --color-gray-300: #eaeaea;
+  --color-gray-400: #d3d3d3;
+  --color-gray-500: #bcbcbc;
+  --color-gray-600: #959595;
+  --color-gray-700: #747474;
+  --color-gray-800: #505050;
+  --color-gray-900: #323232;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — AZUL
+     ────────────────────────────────────────────────────────── */
+
+  --color-blue-400: #378ef0;
+  --color-blue-500: #2680eb;
+  --color-blue-600: #1473e6;
+  --color-blue-700: #0d66d0;
+
+  --color-blue-light-5:  #f5f9fe;
+  --color-blue-light-10: #ebf4fe;
+  --color-blue-light-15: #e1eefd;
+  --color-blue-light-20: #d7e8fc;
+  --color-blue-light-45: #a5ccf8;
+  --color-blue-light-65: #7db6f5;
+  --color-blue-light-85: #559ff2;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — VERDE
+     ────────────────────────────────────────────────────────── */
+
+  --color-green-400: #33ab84;
+  --color-green-500: #2d9d78;
+  --color-green-600: #268e6c;
+  --color-green-700: #12805c;
+
+  --color-green-light-5:  #f5fbf9;
+  --color-green-light-10: #ebf7f3;
+  --color-green-light-15: #e0f2ed;
+  --color-green-light-20: #d6eee6;
+  --color-green-light-45: #a3d9c8;
+  --color-green-light-65: #7ac8af;
+  --color-green-light-85: #5cbc9d;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — VERMELHO
+     ────────────────────────────────────────────────────────── */
+
+  --color-red-400: #ec5b62;
+  --color-red-500: #e34850;
+  --color-red-600: #d7373f;
+  --color-red-700: #c9252d;
+
+  --color-red-light-5:  #fef7f7;
+  --color-red-light-10: #fdefef;
+  --color-red-light-15: #fce6e7;
+  --color-red-light-20: #fbdee0;
+  --color-red-light-45: #f6b5b8;
+  --color-red-light-65: #f39499;
+  --color-red-light-85: #ef747a;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — LARANJA
+     ────────────────────────────────────────────────────────── */
+
+  --color-orange-400: #f29423;
+  --color-orange-500: #e68619;
+  --color-orange-600: #da7b11;
+  --color-orange-700: #cb6f10;
+
+  --color-orange-light-5:  #fef9f4;
+  --color-orange-light-10: #fef5e9;
+  --color-orange-light-15: #fdefde;
+  --color-orange-light-20: #fcead3;
+  --color-orange-light-45: #f9cf9c;
+  --color-orange-light-65: #f7b970;
+  --color-orange-light-85: #f4a444;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — ROXO
+     ────────────────────────────────────────────────────────── */
+
+  --color-purple-400: #9256d9;
+  --color-purple-500: #864ccc;
+  --color-purple-600: #7a42bf;
+  --color-purple-700: #6f38b1;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA PRIMITIVA — ROSA
+     ────────────────────────────────────────────────────────── */
+
+  --color-pink-400: #f473d6;
+  --color-pink-500: #e663c9;
+
+  --color-pink-light-5:  #fef8fd;
+  --color-pink-light-10: #fef1fb;
+  --color-pink-light-15: #fdeaf9;
+  --color-pink-light-20: #fde3f7;
+  --color-pink-light-45: #fac0ed;
+  --color-pink-light-65: #f8a4e5;
+  --color-pink-light-85: #f688dc;
+
+
+  /* ────────────────────────────────────────────────────────────
+     PALETA DE GRÁFICOS
+     Sequência semântica: azul → roxo → rosa → vermelho → laranja
+     → amarelo → verde claro → verde → ciano → dourado → laranja
+     escuro → vermelho escuro
+     ────────────────────────────────────────────────────────── */
+
+  --color-chart-1:  #0d66d0;
+  --color-chart-2:  #825dcb;
+  --color-chart-3:  #e663c9;
+  --color-chart-4:  #f25c96;
+  --color-chart-5:  #ff756b;
+  --color-chart-6:  #ffa164;
+  --color-chart-7:  #d9ce54;
+  --color-chart-8:  #96c74c;
+  --color-chart-9:  #5ae47a;
+  --color-chart-10: #bf9a00;
+  --color-chart-11: #d46d14;
+  --color-chart-12: #d53b3b;
+
+
+  /* ────────────────────────────────────────────────────────────
+     TIPOGRAFIA — FAMÍLIA E PESOS
+     ────────────────────────────────────────────────────────── */
+
+  --font-family-base: 'Open Sans', sans-serif;
+
+  --font-weight-light:    300;
+  --font-weight-regular:  400;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+
+  /* ────────────────────────────────────────────────────────────
+     TIPOGRAFIA — ESCALA DE TAMANHOS
+     Nome interno Figma → alias legível → valor px
+     font-size-25  → 2xs →  8px
+     font-size-50  → xs  → 10px
+     font-size-75  → sm  → 12px
+     font-size-100 → md  → 14px  (base do corpo de texto)
+     font-size-200 → lg  → 16px
+     Normal        → xl  → 18px
+     font-size-400 → 2xl → 20px
+     font-size-600 → 3xl → 24px
+     ────────────────────────────────────────────────────────── */
+
+  --font-size-2xs: 8px;
+  --font-size-xs:  10px;
+  --font-size-sm:  12px;
+  --font-size-md:  14px;
+  --font-size-lg:  16px;
+  --font-size-xl:  18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+
+
+  /* ────────────────────────────────────────────────────────────
+     TIPOGRAFIA — LINE HEIGHTS
+     ────────────────────────────────────────────────────────── */
+
+  --line-height-2xs: 10px;
+  --line-height-xs:  12px;
+  --line-height-sm:  14px;
+  --line-height-md:  18px;
+  --line-height-lg:  20px;
+  --line-height-xl:  22px;
+  --line-height-2xl: 26px;
+  --line-height-3xl: 32px;
+
+
+  /* ────────────────────────────────────────────────────────────
+     TIPOGRAFIA — HEADINGS
+     Fonte: Open Sans Regular (400)
+     H1–H3: escala de display (uso em landing pages / dashboards)
+     H6: alias de font-size-400-semibold, usado em títulos de seção
+     ────────────────────────────────────────────────────────── */
+
+  --font-size-h1:     56px;
+  --line-height-h1:   72.8px;
+  --font-weight-h1:   var(--font-weight-regular);
+
+  --font-size-h2:     48px;
+  --line-height-h2:   62.4px;
+  --font-weight-h2:   var(--font-weight-regular);
+
+  --font-size-h3:     40px;
+  --line-height-h3:   52px;
+  --font-weight-h3:   var(--font-weight-regular);
+
+  --font-size-h6:     20px;
+  --line-height-h6:   26px;
+  --font-weight-h6:   var(--font-weight-semibold);
+
+
+  /* ────────────────────────────────────────────────────────────
+     TIPOGRAFIA — BOTÕES
+     Convenção:
+       -bold     → ação primária (font-weight 700)
+       -regular  → ação secundária, link e hover (font-weight 400)
+     ────────────────────────────────────────────────────────── */
+
+  --font-size-btn-xs:             var(--font-size-xs);    /* 10px */
+  --line-height-btn-xs:           16px;
+  --font-weight-btn-xs-bold:      var(--font-weight-bold);
+  --font-weight-btn-xs-regular:   var(--font-weight-regular);
+
+  --font-size-btn-sm:             var(--font-size-sm);    /* 12px */
+  --line-height-btn-sm:           18px;
+  --font-weight-btn-sm-bold:      var(--font-weight-bold);
+  --font-weight-btn-sm-regular:   var(--font-weight-regular);
+
+  --font-size-btn-md:             var(--font-size-md);    /* 14px */
+  --line-height-btn-md:           20px;
+  --font-weight-btn-md-bold:      var(--font-weight-bold);
+  --font-weight-btn-md-regular:   var(--font-weight-regular);
+
+  --font-size-btn-lg:             var(--font-size-lg);    /* 16px */
+  --line-height-btn-lg:           22px;
+  --font-weight-btn-lg-bold:      var(--font-weight-bold);
+  --font-weight-btn-lg-regular:   var(--font-weight-regular);
+
+
+  /* ────────────────────────────────────────────────────────────
+     BORDER RADIUS
+     ────────────────────────────────────────────────────────── */
+
+  --radius-none: 0px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-pill: 999px;
+
+
+  /* ────────────────────────────────────────────────────────────
+     ESPAÇAMENTO
+     ────────────────────────────────────────────────────────── */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+
+
+  /* ────────────────────────────────────────────────────────────
+     ÍCONES — CORES SEMÂNTICAS
+     Fonte: Figma › Design System › Icons (fill padrão #505050 = gray-800)
+     ────────────────────────────────────────────────────────── */
+
+  --color-icon-default:  var(--color-gray-800);  /* #505050 — ícones sobre fundo branco */
+  --color-icon-muted:    var(--color-gray-600);  /* #959595 — ícones secundários / desabilitado leve */
+  --color-icon-disabled: var(--color-gray-400);  /* #d3d3d3 — ícones desabilitados */
+  --color-icon-oncolor:  var(--color-white);     /* #ffffff — ícones sobre fundo colorido */
+
+
+  /* ────────────────────────────────────────────────────────────
+     ÍCONES — ESCALA DE TAMANHOS
+     Fonte: Figma › Design System › Buttons (link button icon sizes)
+     xsmall=10px  small=12px  medium=16px  large=20px  xl=24px (container padrão)
+     ────────────────────────────────────────────────────────── */
+
+  --icon-size-xs: 10px;
+  --icon-size-sm: 12px;
+  --icon-size-md: 16px;
+  --icon-size-lg: 20px;
+  --icon-size-xl: 24px;  /* container padrão de todos os componentes Figma */
+
+
+  /* ────────────────────────────────────────────────────────────
+     SOMBRAS / ELEVAÇÃO
+     ────────────────────────────────────────────────────────── */
+
+  /* Elevação padrão — cards, dropdowns, modais
+     (Figma: "Elevation" / "Sombra" — valores idênticos, mantida uma) */
+  --shadow-elevation:
+    0px 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0px 6px 16px  0px rgba(0, 0, 0, 0.08),
+    0px 9px 28px  8px rgba(0, 0, 0, 0.05);
+
+  /* Foco — outline de acessibilidade em inputs e botões */
+  --shadow-focus:
+    0px 0px 4px 0px rgba(24, 144, 255, 0.50);
+
+  /* Hover — anel de destaque ao passar o cursor */
+  --shadow-hover:
+    0px 0px 4px 8px rgba(85, 159, 242, 0.40);
+
+}
+
+
+/* ============================================================
+   REFERÊNCIA — COMBINAÇÕES DE TEXTO (text styles compostos)
+
+   Os tokens acima cobrem as propriedades individualmente.
+   Use-os em conjunto conforme o style do Figma:
+
+   Text/font-size-50-regular   → xs  / regular / lh-sm
+   Text/font-size-50-semibold  → xs  / semibold / lh-sm
+   Text/font-size-75-regular   → sm  / regular / lh-md
+   Text/font-size-75-semibold  → sm  / semibold / lh-md
+   Text/font-size-75-bold      → sm  / bold / lh-md
+   Text/font-size-100-regular  → md  / regular / lh-lg
+   Text/font-size-100-semibold → md  / semibold / lh-lg
+   Text/font-size-100-bold     → md  / bold / lh-lg
+   Text/font-size-200-semibold → lg  / semibold / lh-lg
+   Text/font-size-400-semibold → 2xl / semibold / lh-2xl
+   Text/font-size-600-light    → 3xl / light / lh-3xl
+   Text/font-size-25-regular   → 2xs / regular / lh-2xs
+
+   Text/Upper/* → mesmos tamanhos com text-transform: uppercase
+   Buttons/*    → ver tokens --font-size-btn-* acima
+
+   Heading H1 → 56px / 72.8px / regular
+   Heading H2 → 48px / 62.4px / regular
+   Heading H3 → 40px / 52px   / regular
+   Heading H6 → 20px / 26px   / semibold
+   ============================================================ */

@@ -1,0 +1,115 @@
+/* ═══════════════════════════════════════════════════════════════
+   Radio — DS 1.0 · criado via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-4383 + Figma set `radio` (via Assets
+   3022:18694). Componente NOVO no DS 1.0 (não substitui ninguém).
+   BEM: .radio / .radio__<el> / .radio--<modificador>
+
+   Spec numérica do Figma:
+     círculo: 16×16 · radius pill ·
+       off: branco + borda 1px gray-400 · off hover: borda blue-600
+       on: fundo/borda blue-400 + miolo branco central
+       on hover: glow 0 0 4px #559FF2@40% (sem token — valor do Figma)
+       disabled: linha 40%; círculo off gray-100 + borda gray-500
+     linha: gap 8 · label 400 14/20 gray-900 (variante semibold) ·
+     complementar 400 12/18 gray-600 · label aceita ícone (16) e Badge
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco — <label> com input nativo escondido ───────────────────── */
+.radio {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.radio__input {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* Círculo ──────────────────────────────────────────────────────── */
+.radio__circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;                     /* alinha com a 1ª linha do label */
+  box-sizing: border-box;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-400);
+  border-radius: var(--radius-pill);
+  transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+/* Miolo (dot) — aparece no estado on */
+.radio__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* Estados ──────────────────────────────────────────────────────── */
+.radio__input:checked ~ .radio__circle {
+  background: var(--color-blue-400);
+  border-color: var(--color-blue-400);
+}
+.radio__input:checked ~ .radio__circle .radio__dot { opacity: 1; }
+
+.radio:hover .radio__input:not(:checked) ~ .radio__circle,
+.radio.is-hover .radio__input:not(:checked) ~ .radio__circle {
+  border-color: var(--color-blue-600);
+}
+.radio:hover .radio__input:checked ~ .radio__circle,
+.radio.is-hover .radio__input:checked ~ .radio__circle {
+  /* Glow do Figma (#559FF2 @ 40%, blur 4) — sem token de sombra no DS */
+  box-shadow: 0 0 4px rgba(85, 159, 242, 0.4);
+}
+
+.radio__input:focus-visible ~ .radio__circle {
+  outline: 2px solid var(--color-blue-400);
+  outline-offset: 2px;
+}
+
+.radio--disabled,
+.radio:has(.radio__input:disabled) {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.radio--disabled .radio__input:not(:checked) ~ .radio__circle,
+.radio:has(.radio__input:disabled) .radio__input:not(:checked) ~ .radio__circle {
+  background: var(--color-gray-100);
+  border-color: var(--color-gray-500);
+}
+
+/* Conteúdo textual (idêntico ao Checkbox) ──────────────────────── */
+.radio__content { display: flex; flex-direction: column; min-width: 0; }
+.radio__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-md);      /* 14px */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);  /* 20px */
+  color: var(--color-gray-900);
+}
+.radio--strong .radio__label { font-weight: var(--font-weight-semibold); }
+.radio__label .material-icons,
+.radio__label .material-icons-round { font-size: 16px; color: var(--color-gray-800); }
+.radio__helper {
+  font-size: var(--font-size-sm);      /* 12px */
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-md);  /* 18px */
+  color: var(--color-gray-600);
+}

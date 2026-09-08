@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════════════════════
+   Link Button — DS 1.0 · recriado via skill component-creator 14/07/2026
+   Fontes: ClickUp ca70f-5283/ca70f-4283 + Figma `button / link`
+   (nó 3052:18954 — este é o dono original do link de Assets que as páginas
+   do Primary/Secondary herdaram por engano).
+   BEM: .btn-link / .btn-link__<el> / .btn-link--<modificador>
+
+   Spec numérica do Figma:
+     large:  gap 8 · ícone 20 (trailing 18) · texto 400 16/22
+     medium: gap 6 · ícone 16 · texto 400 14/20   (default)
+     small:  gap 4 · ícone 12 · texto 400 12/18
+     xsmall: gap 2 · ícone 10 · texto 400 10/16
+     Sem fundo, sem borda, sem padding, SEM sublinhado (prints).
+     Cores (texto+ícone): default #378EF0 (blue-400) → hover #1473E6
+     (blue-600) → active #0D66D0 (blue-700) · disable opacity 0.4.
+     Theme extra do Figma: gray (#BCBCBC → hover #959595) — a doc do ClickUp
+     lista só o `link` azul; gray mantido como modificador (ver .md).
+     Ícone: Material Icons ROUND — os Md* do Figma usam a variante
+     rounded (terminais arredondados); a clássica diverge no desenho.
+     Caixa × desenho: font-size é a CAIXA (20/16/12/10, igual à instância
+     do Figma); o glifo DESENHA a ~75% (15/12/9/7.5, igual ao Vector).
+     Não "corrigir" para 15 — encolheria o desenho para ~11px.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — link azul + medium + default ────────────────────── */
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+
+  color: var(--color-blue-400);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-btn-md);             /* 14px */
+  font-weight: var(--font-weight-btn-md-regular); /* 400 */
+  line-height: var(--line-height-btn-md);         /* 20px */
+  text-decoration: none;                          /* sem sublinhado (Figma/prints) */
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+/* Estados (.is-hover/.is-active só para documentação/QA) ───────── */
+.btn-link:hover,
+.btn-link.is-hover { color: var(--color-blue-600); }
+
+.btn-link:active,
+.btn-link.is-active { color: var(--color-blue-700); }
+
+.btn-link:disabled,
+.btn-link[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Theme extra (Figma): gray ────────────────────────────────────── */
+.btn-link--gray { color: var(--color-gray-400); }
+.btn-link--gray:hover,
+.btn-link--gray.is-hover { color: var(--color-gray-600); }
+.btn-link--gray:active,
+.btn-link--gray.is-active { color: var(--color-gray-800); }
+
+/* Sizes (medium é o default do bloco) ──────────────────────────── */
+.btn-link--large  { gap: 8px; font-size: var(--font-size-btn-lg); line-height: var(--line-height-btn-lg); }
+.btn-link--small  { gap: 4px; font-size: var(--font-size-btn-sm); line-height: var(--line-height-btn-sm); }
+.btn-link--xsmall { gap: 2px; font-size: var(--font-size-btn-xs); line-height: var(--line-height-btn-xs); }
+
+/* Elementos ────────────────────────────────────────────────────── */
+/* Ícone SEMPRE Material Icons Round. Posição esquerda/direita =
+   ordem no markup. NUNCA usar o Link Button só com ícone (texto obrigatório). */
+.btn-link__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;                          /* medium */
+  height: 16px;
+  flex-shrink: 0;
+}
+.btn-link__icon .material-icons,
+.btn-link__icon .material-icons-round { font-size: 16px; line-height: 1; }
+.btn-link__icon > svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+
+.btn-link--large  .btn-link__icon,
+.btn-link--large  .btn-link__icon .material-icons,
+.btn-link--large  .btn-link__icon .material-icons-round { width: 20px; height: 20px; font-size: 20px; }
+/* Figma: no large o ícone trailing é 18px (leading 20px) */
+.btn-link--large  .btn-link__label ~ .btn-link__icon,
+.btn-link--large  .btn-link__label ~ .btn-link__icon .material-icons,
+.btn-link--large  .btn-link__label ~ .btn-link__icon .material-icons-round { width: 18px; height: 18px; font-size: 18px; }
+.btn-link--small  .btn-link__icon,
+.btn-link--small  .btn-link__icon .material-icons,
+.btn-link--small  .btn-link__icon .material-icons-round { width: 12px; height: 12px; font-size: 12px; }
+.btn-link--xsmall .btn-link__icon,
+.btn-link--xsmall .btn-link__icon .material-icons,
+.btn-link--xsmall .btn-link__icon .material-icons-round { width: 10px; height: 10px; font-size: 10px; }
+
+/* Label herda tipografia do bloco */
+.btn-link__label {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-base);
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
