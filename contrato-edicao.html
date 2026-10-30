@@ -967,6 +967,23 @@
             <span class="plano-summary__ver">Ver detalhamento</span>
           </button>
         </div>
+
+        <!-- Só aparece quando o plano inclui solicitações sob demanda (Pro, Enterprise, Trial). -->
+        <div class="subsection" id="frequencia-block" hidden>
+          <span class="field-group__caption">Frequência das solicitações sob demanda</span>
+          <div class="radio-row">
+            <label class="radio">
+              <input class="radio__input" type="radio" name="frequencia" value="semanal" checked />
+              <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+              <span class="radio__content"><span class="radio__label">Semanal</span></span>
+            </label>
+            <label class="radio">
+              <input class="radio__input" type="radio" name="frequencia" value="diaria" />
+              <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
+              <span class="radio__content"><span class="radio__label">Diária</span></span>
+            </label>
+          </div>
+        </div>
       </section>
 
       <!-- ═══════════════════ Adicionais ═══════════════════ -->
@@ -976,11 +993,12 @@
         <div class="adicionais-list" id="adicionais-varejo">
           <div class="adicional-row">
             <label class="switch">
-              <input type="checkbox" data-adicional="otimizacao" />
+              <input type="checkbox" data-adicional="otimizacao" disabled />
               <span class="switch__track" aria-hidden="true"></span>
             </label>
             <span class="adicional-row__label">Otimização</span>
             <span class="ia-badge"><svg width="12" height="12"><use href="#ia-icon"></use></svg>IA</span>
+            <span class="adicional-row__lock-msg" data-otimizacao-lock-msg>Disponível nos planos Pro e Enterprise, quando o Gerenciador de Preços está incluso.</span>
           </div>
           <div class="adicional-row">
             <label class="switch">
@@ -988,6 +1006,13 @@
               <span class="switch__track" aria-hidden="true"></span>
             </label>
             <span class="adicional-row__label">Dados Shopping Brasil</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="paineis-customizados" />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Painéis customizados</span>
           </div>
           <div class="adicional-row">
             <label class="switch">
@@ -1136,6 +1161,13 @@
               <span class="switch__track" aria-hidden="true"></span>
             </label>
             <span class="adicional-row__label">Gestão de tabelas</span>
+          </div>
+          <div class="adicional-row">
+            <label class="switch">
+              <input type="checkbox" data-adicional="paineis-customizados-ind" />
+              <span class="switch__track" aria-hidden="true"></span>
+            </label>
+            <span class="adicional-row__label">Painéis customizados</span>
           </div>
           <div class="adicional-row">
             <label class="switch">
@@ -1917,7 +1949,7 @@
 
     const count = parseInt(countEl.textContent, 10) || 0;
     const total = base + count * 100;
-    summaryEl.textContent = `${base} do plano + ${count * 100} extras = ${total} solicitações/semana`;
+    summaryEl.textContent = `${base} do plano + ${count * 100} extras = ${total} solicitações/${frequenciaSolicitacoes() === 'diaria' ? 'dia' : 'semana'}`;
   }
 
   function updatePacotesSummaries() {
@@ -1970,6 +2002,7 @@
         { label: 'Extração de preços', Essential: false, Pro: true, Enterprise: true, Trial: false },
         { label: 'Preço Oferta (farma)', Essential: false, Pro: true, Enterprise: true, Trial: false },
         { label: 'Preço Oferta (alimentar)', Essential: false, Pro: 'Visualização', Enterprise: 'Visualização', Trial: false },
+        { label: 'Arquitetura de Preços', Essential: false, Pro: false, Enterprise: true, Trial: false },
       ]},
       { nucleo: 'Campanhas', itens: [
         { label: 'Módulo de campanhas', Essential: false, Pro: true, Enterprise: true, Trial: true },
@@ -2047,6 +2080,8 @@
     updateAderenciaAlertaGate();
     updateCompetitividadeAlertaGate();
     updateSegmentosPersonalizadosGate();
+    updateOtimizacaoGate();
+    updateFrequenciaSolicitacoes();
   }
 
   // Alerta de Aderência de Competitividade: o switch fica sempre visível, mas só
@@ -2104,6 +2139,22 @@
     });
   }
 
+  // Otimização (Varejo): só pode ser ativado quando o plano incluir o
+  // Gerenciador de Preços — na prática, Pro ou Enterprise (nunca Trial,
+  // já que todo o núcleo Precificação Estratégica fica fora do Trial).
+  function updateOtimizacaoGate() {
+    const bundle = currentBundle();
+    const plano = planoInput.value;
+    document.querySelectorAll('[data-adicional="otimizacao"]').forEach(input => {
+      const row = input.closest('.adicional-row');
+      const lockMsg = row ? row.querySelector('[data-otimizacao-lock-msg]') : null;
+      const ativo = bundle === 'varejo' && planIncluiItem('varejo', plano, 'Gerenciador de Preços');
+      input.disabled = !ativo;
+      if (lockMsg) lockMsg.hidden = ativo;
+      if (!ativo && input.checked) input.checked = false;
+    });
+  }
+
   document.querySelectorAll('[data-elasticidade-toggle]').forEach(toggle => {
     const row = toggle.closest('.adicional-row');
     const skus = row.querySelector('[data-elasticidade-skus]');
@@ -2138,6 +2189,31 @@
     return flat;
   }
 
+  // ── Frequência das solicitações sob demanda (Diária | Semanal) — escolha do contrato ──
+  function frequenciaSolicitacoes() {
+    const checked = document.querySelector('input[name="frequencia"]:checked');
+    return checked ? checked.value : 'semanal';
+  }
+
+  function updateFrequenciaSolicitacoes() {
+    const bloco = document.getElementById('frequencia-block');
+    if (!bloco) return;
+    const disponivel = pacotesBase() > 0;
+    bloco.hidden = !disponivel;
+    if (!disponivel) {
+      const semanal = bloco.querySelector('input[value="semanal"]');
+      if (semanal) semanal.checked = true;
+    }
+    updatePacotesSummaries();
+  }
+  document.querySelectorAll('input[name="frequencia"]').forEach(r => r.addEventListener('change', updatePacotesSummaries));
+
+  // O nome do item na modal acompanha a frequência escolhida.
+  function rotuloItem(item) {
+    if (item.label.indexOf('Solicitações sob demanda') !== 0) return item.label;
+    return 'Solicitações sob demanda (' + (frequenciaSolicitacoes() === 'diaria' ? 'diárias' : 'semanais') + ')';
+  }
+
   function renderModalBody() {
     const bundle = currentBundle();
     const plano = planoInput.value;
@@ -2167,7 +2243,7 @@
         row.className = 'modal__row';
         const value = item[plano];
         const iaTag = item.ia ? '<span class="ia-badge"><svg width="12" height="12"><use href="#ia-icon"></use></svg>IA</span>' : '';
-        row.innerHTML = `<span class="modal__row-label">${item.label}${iaTag}</span><span class="modal__row-value">${value === true ? 'Incluso' : value}</span>`;
+        row.innerHTML = `<span class="modal__row-label">${rotuloItem(item)}${iaTag}</span><span class="modal__row-value">${value === true ? 'Incluso' : value}</span>`;
         section.appendChild(row);
       });
       modalBody.appendChild(section);
