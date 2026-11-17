@@ -337,6 +337,17 @@
     white-space: nowrap;
     line-height: 18px;
   }
+  /* Aviso dentro do card Plano (ex.: regra do diário) — box cinza com borda suave */
+  .aviso-box {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+  }
+  .stepper__btn:disabled { opacity: .4; cursor: not-allowed; }
   .stepper__btn {
     width: 24px; height: 24px;
     border: 1px solid var(--color-gray-400);
@@ -990,6 +1001,9 @@
               <span class="radio__circle" aria-hidden="true"><span class="radio__dot"></span></span>
               <span class="radio__content"><span class="radio__label">Diária</span></span>
             </label>
+          </div>
+          <div class="aviso-box" id="aviso-diario" hidden>
+            <strong>A frequência diária não tem cota no plano.</strong> Em Adicionais, "Pacotes adicionais on demand" não pode ser desativado e exige pelo menos 1 pacote de 100 solicitações.
           </div>
         </div>
       </section>
@@ -2045,26 +2059,41 @@
     const countEl = row.querySelector('[data-pacotes-count]');
     const summaryEl = row.querySelector('[data-pacotes-summary]');
     const lockMsg = row.querySelector('[data-pacotes-lock-msg]');
-    const base = pacotesBase();
+    const minus = row.querySelector('[data-pacotes-step="-1"]');
+    const planoBase = pacotesBase();
 
-    // Pacotes adicionais só fazem sentido se o plano já inclui solicitações sob
-    // demanda semanais — sem isso, não tem "base" pra somar pacote extra.
-    const disponivel = base > 0;
-    toggle.disabled = !disponivel;
+    // Pacotes adicionais só fazem sentido se o plano inclui solicitações sob
+    // demanda — Essential não tem On Demand, então fica travado.
+    const disponivel = planoBase > 0;
+    // No diário não há cota no plano: só pacotes, e é obrigatório ter ao menos 1.
+    const diaria = disponivel && frequenciaSolicitacoes() === 'diaria';
+    const base = diaria ? 0 : planoBase;
+
+    toggle.disabled = !disponivel || diaria;
     if (lockMsg) lockMsg.hidden = disponivel;
     if (!disponivel && toggle.checked) {
       toggle.checked = false;
       stepper.hidden = true;
       countEl.textContent = '0';
     }
+    if (diaria) {
+      toggle.checked = true;
+      stepper.hidden = false;
+      if ((parseInt(countEl.textContent, 10) || 0) < 1) countEl.textContent = '1';
+    }
+    if (minus) minus.disabled = diaria && (parseInt(countEl.textContent, 10) || 0) <= 1;
 
     const count = parseInt(countEl.textContent, 10) || 0;
     const total = base + count * 100;
-    summaryEl.textContent = `${base} do plano + ${count * 100} extras = ${total} solicitações/${frequenciaSolicitacoes() === 'diaria' ? 'dia' : 'semana'}`;
+    summaryEl.textContent = diaria
+      ? `${count * 100} extras = ${total} solicitações/dia`
+      : `${base} do plano + ${count * 100} extras = ${total} solicitações/semana`;
   }
 
   function updatePacotesSummaries() {
     document.querySelectorAll('.adicional-row--pacotes').forEach(updatePacotesSummary);
+    const aviso = document.getElementById('aviso-diario');
+    if (aviso) aviso.hidden = !(pacotesBase() > 0 && frequenciaSolicitacoes() === 'diaria');
   }
 
   document.querySelectorAll('[data-pacotes-toggle]').forEach(toggle => {
@@ -2079,7 +2108,8 @@
     row.querySelectorAll('[data-pacotes-step]').forEach(btn => {
       btn.addEventListener('click', () => {
         const delta = parseInt(btn.dataset.pacotesStep, 10);
-        const next = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + delta);
+        const minimo = (pacotesBase() > 0 && frequenciaSolicitacoes() === 'diaria') ? 1 : 0;
+        const next = Math.max(minimo, (parseInt(countEl.textContent, 10) || 0) + delta);
         countEl.textContent = String(next);
         updatePacotesSummary(row);
       });
@@ -2319,12 +2349,26 @@
     }
     updatePacotesSummaries();
   }
-  document.querySelectorAll('input[name="frequencia"]').forEach(r => r.addEventListener('change', updatePacotesSummaries));
+  // Trocar a frequência zera os pacotes (as duas lógicas são diferentes); o diário já volta com 1.
+  document.querySelectorAll('input[name="frequencia"]').forEach(r => r.addEventListener('change', () => {
+    document.querySelectorAll('.adicional-row--pacotes').forEach(row => {
+      row.querySelector('[data-pacotes-toggle]').checked = false;
+      row.querySelector('[data-pacotes-stepper]').hidden = true;
+      row.querySelector('[data-pacotes-count]').textContent = '0';
+    });
+    updatePacotesSummaries();
+  }));
 
   // O nome do item na modal acompanha a frequência escolhida.
   function rotuloItem(item) {
     if (item.label.indexOf('Solicitações sob demanda') !== 0) return item.label;
     return 'Solicitações sob demanda (' + (frequenciaSolicitacoes() === 'diaria' ? 'diárias' : 'semanais') + ')';
+  }
+
+  // No diário não há cota incluída: o item aparece como "Sob contratação", sem número.
+  function valorItem(item, value) {
+    if (item.label.indexOf('Solicitações sob demanda') === 0 && frequenciaSolicitacoes() === 'diaria') return 'Sob contratação';
+    return value === true ? 'Incluso' : value;
   }
 
   function renderModalBody() {
@@ -2356,7 +2400,7 @@
         row.className = 'modal__row';
         const value = item[plano];
         const iaTag = item.ia ? '<span class="ia-badge"><svg width="12" height="12"><use href="#ia-icon"></use></svg>IA</span>' : '';
-        row.innerHTML = `<span class="modal__row-label">${rotuloItem(item)}${iaTag}</span><span class="modal__row-value">${value === true ? 'Incluso' : value}</span>`;
+        row.innerHTML = `<span class="modal__row-label">${rotuloItem(item)}${iaTag}</span><span class="modal__row-value">${valorItem(item, value)}</span>`;
         section.appendChild(row);
       });
       modalBody.appendChild(section);
